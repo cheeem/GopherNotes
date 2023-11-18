@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/main.css" />
+    <title>GopherNotes</title>
+  </head>
+  <body>
+
+    <main>
+
+      <form id="upload" action="https://medevisor.com/mail" method="POST" enctype="multipart/form-data">
+        <ul>
+          <li>
+            <input id="x500" type="text" name="x500" placeholder=" " required />
+            <label for="x500"> x500 </label>
+          </li>
+          <li>
+              <input id="title" type="text" name="title" placeholder=" " required />
+              <label for="title"> Title </label>
+          </li>
+          <li>
+              <input id="filename" type="text" name="filename" placeholder=" " required ></input>
+              <label for="filename"> File Name </label>
+          </li>
+          <li>
+            <input id="filename" type="file" name="filename" placeholder=" " required ></input>
+          </li>
+          <button> Submit </button>
+        </ul>
+      </form>
+
+      <ul id="posts">
+        
+      </ul>
+
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+
+  </body>
+</html>
