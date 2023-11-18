@@ -11,7 +11,7 @@
 
     <main>
 
-      <form id="upload" action="https://medevisor.com/mail" method="POST" enctype="multipart/form-data">
+      <form id="upload" action="http://127.0.0.1:3000/upload" method="POST" enctype="multipart/form-data">
         <ul>
           <li>
             <input id="x500" type="text" name="x500" placeholder=" " required />
@@ -26,7 +26,7 @@
               <label for="filename"> File Name </label>
           </li>
           <li>
-            <input id="filename" type="file" name="filename" placeholder=" " required ></input>
+            <input id="image" type="file" name="image" placeholder=" " accept="image/*" required ></input>
           </li>
           <button> Submit </button>
         </ul>

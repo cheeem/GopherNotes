@@ -71,7 +71,28 @@ html, body, main {
 
 main {
     display: flex;
-    align-items: center;
+}
+
+#posts {
+    width: 50%;
+
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#posts li {
+    /* flex-basis: 10em; */
+
+    padding: 2em;
+
+    width: fit-content;
+}
+
+#posts li img {
+    width: 10em;
+    height: 10em;
+
+    object-fit: cover;
 }
 
 form {
@@ -86,6 +107,8 @@ form {
     gap: var(--form-gap);
 
     height: fit-content;
+
+    padding: 2em;
 }
 
 form ul {
