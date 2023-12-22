@@ -1,16 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;500;600;800;900');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;500;600;800;900");
 
 * {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
 
-	font-family: 'Montserrat', sans-serif;
+	font-family: "Montserrat", sans-serif;
 	color: var(--neutral3);
 }
 
 :root {
-
 	--neutral1: white;
 	--neutral2: hsl(0, 0%, 97%);
 	--neutral3: hsl(238, 83%, 14%);
@@ -20,9 +19,11 @@
 	--primary3: hsl(249, 100%, 92%);
 
 	--invalid: hsl(0, 100%, 95%);
-	
-	--neutral1-filter: invert(100%) sepia(0%) saturate(2%) hue-rotate(204deg) brightness(104%) contrast(101%);
-	--neutral3-filter: invert(8%) sepia(41%) saturate(7494%) hue-rotate(240deg) brightness(62%) contrast(108%);
+
+	--neutral1-filter: invert(100%) sepia(0%) saturate(2%) hue-rotate(204deg)
+		brightness(104%) contrast(101%);
+	--neutral3-filter: invert(8%) sepia(41%) saturate(7494%) hue-rotate(240deg)
+		brightness(62%) contrast(108%);
 
 	--side-padding: 10vw;
 }
@@ -54,9 +55,7 @@ button {
 
 	cursor: pointer;
 
-	transition: 
-		background-color 0.2s ease, 
-		color 0.2s ease;
+	transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 button:hover {
@@ -65,130 +64,133 @@ button:hover {
 	color: var(--_btn-alt-color);
 }
 
-html, body, main {
-    height: 100%;
+html,
+body,
+main {
+	height: 100%;
 }
 
 main {
-    display: flex;
+	display: flex;
 }
 
 #posts {
-    width: 50%;
+	width: 50%;
 
-    display: flex;
-    flex-wrap: wrap;
+	display: flex;
+	flex-wrap: wrap;
 }
 
 #posts li {
-    /* flex-basis: 10em; */
+	/* flex-basis: 10em; */
 
-    padding: 2em;
+	padding: 2em;
 
-    width: fit-content;
+	width: fit-content;
 }
 
 #posts li img {
-    width: 10em;
-    height: 10em;
+	width: 10em;
+	height: 10em;
 
-    object-fit: cover;
+	object-fit: cover;
 }
 
 form {
-    --form-gap: 2em;
-    --field-active-top: -0.75em;
-    --field-padding-y: 1em;
-    --field-padding-x: 2em;
+	--form-gap: 2em;
+	--field-active-top: -0.75em;
+	--field-padding-y: 1em;
+	--field-padding-x: 2em;
 
-    flex: 30em 1 1;
+	flex: 30em 1 1;
 
-    display: grid;
-    gap: var(--form-gap);
+	display: grid;
+	gap: var(--form-gap);
 
-    height: fit-content;
+	height: fit-content;
 
-    padding: 2em;
+	padding: 2em;
 }
 
 form ul {
-    display: grid; 
-    gap: var(--form-gap);
+	display: grid;
+	gap: var(--form-gap);
 }
 
 form ul li {
-    position: relative;
+	position: relative;
 }
 
-input, textarea {
-    padding: var(--field-padding-y) var(--field-padding-x);
+input,
+textarea {
+	padding: var(--field-padding-y) var(--field-padding-x);
 
-    width: 100%;
+	width: 100%;
 
-    background-color: var(--neutral2);
+	background-color: var(--neutral2);
 
-    font-size: 1em;
-    
-    border: none;
+	font-size: 1em;
 
-    outline: none;
+	border: none;
+
+	outline: none;
 }
 
 input[type="text"]:invalid {
-    background-color: var(--invalid);
+	background-color: var(--invalid);
 }
 
 input[type="text"]:placeholder-shown {
-    background-color: var(--neutral2);
+	background-color: var(--neutral2);
 }
 
 input[type="text"]:focus {
-    background-color: var(--neutral2);
+	background-color: var(--neutral2);
 }
 
 input[type="text"] ~ label {
-    position: absolute;
-    top: var(--field-active-top);
-    left: var(--field-padding-x);
+	position: absolute;
+	top: var(--field-active-top);
+	left: var(--field-padding-x);
 
-    font-weight: 600;
+	font-weight: 600;
 
-    pointer-events: none;
+	pointer-events: none;
 
-    transition: top 0.2s ease;
+	transition: top 0.2s ease;
 }
 
 input[type="text"]:placeholder-shown ~ label {
-    top: var(--field-padding-y);
+	top: var(--field-padding-y);
 }
 
 input[type="text"]:focus ~ label {
-    top: var(--field-active-top);
+	top: var(--field-active-top);
 }
 
 form .submit {
-    display: flex;
-    align-items: center;
-    gap: 1.5em;
+	display: flex;
+	align-items: center;
+	gap: 1.5em;
 }
 
 form button {
-    --btn-main-color: var(--neutral3);
-    --btn-alt-color: var(--neutral2);
+	--btn-main-color: var(--neutral3);
+	--btn-alt-color: var(--neutral2);
 
-    padding-left: 2.5em;
-    padding-right: 2.5em;
+	padding-left: 2.5em;
+	padding-right: 2.5em;
 
-    border: none;
+	border: none;
 }
 
-form:invalid button {   
-    --btn-main-color: var(--neutral1);
+form:invalid button {
+	--btn-main-color: var(--neutral1);
 
-    cursor: not-allowed;
+	cursor: not-allowed;
 }
 
 form:invalid button:hover {
-    background-color: var(--btn-alt-color);
-    color: var(--btn-main-color);
+	background-color: var(--btn-alt-color);
+	color: var(--btn-main-color);
 }

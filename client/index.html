@@ -1,44 +1,59 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./src/main.css" />
-    <title>GopherNotes</title>
-  </head>
-  <body>
-
-    <main>
-
-      <form id="upload" action="http://127.0.0.1:3000/upload" method="POST" enctype="multipart/form-data">
-        <ul>
-          <li>
-            <input id="x500" type="text" name="x500" placeholder=" " required />
-            <label for="x500"> x500 </label>
-          </li>
-          <li>
-              <input id="title" type="text" name="title" placeholder=" " required />
-              <label for="title"> Title </label>
-          </li>
-          <li>
-              <input id="filename" type="text" name="filename" placeholder=" " required ></input>
-              <label for="filename"> File Name </label>
-          </li>
-          <li>
-            <input id="image" type="file" name="image" placeholder=" " accept="image/*" required ></input>
-          </li>
-          <button> Submit </button>
-        </ul>
-      </form>
-
-      <ul id="posts">
-        
-      </ul>
-
-    </main>
-
-    <script type="module" src="/src/main.ts"></script>
-
-  </body>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Gopher Notes</title>
+		<link rel="stylesheet" type="text/css" href="src/css/main.css" />
+	</head>
+	<body>
+		<div id="header">
+			<img src="src/images/home_logo.png" id="logo" alt="Gopher Grades Logo" />
+			<div id="user-area">
+				<img
+					src="src/images/profile_icon.png"
+					id="user-profile"
+					alt="User Profile"
+				/>
+				<button id="log-in-button" onclick="location.href='login.html';">
+					Log In
+				</button>
+			</div>
+		</div>
+		<div id="container">
+			<div id="left-nav">
+				<form id="search-form">
+					<input
+						type="text"
+						id="course-department"
+						name="course-department"
+						placeholder="Course Department"
+					/>
+					<input
+						type="text"
+						id="course-name"
+						name="course-name"
+						placeholder="Course Name"
+					/>
+					<input
+						type="text"
+						id="professor"
+						name="professor"
+						placeholder="Professor"
+					/>
+					<input type="text" id="year" name="year" placeholder="Year" />
+					<button type="submit" class="form-button">Search</button>
+				</form>
+				<button id="contact-us" class="form-button">Contact Us</button>
+			</div>
+			<div id="main-content">
+				<div class="note">Note 1</div>
+				<div class="note">Note 2</div>
+				<div class="note">Note 3</div>
+				<div class="note">Note 4</div>
+			</div>
+			<button id="upload-button" onclick="location.href='upload.html';">
+				Upload
+			</button>
+		</div>
+		<script src="script.js"></script>
+	</body>
 </html>
