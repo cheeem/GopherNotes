@@ -1,125 +1,133 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import styled from 'styled-components';
 import './App.css'
 import Header from './components/Header';
 import Filters from './components/Filters'
 import Notes from './components/Notes'
 import Footer from './components/Footer'
+import axios from 'axios';
 
-  // return (
-  //   <>
-  //     <div>
-  //       <h1>Title here</h1>
-  //       <a href="https://vitejs.dev" target="_blank">
-  //         <img src={viteLogo} className="logo" alt="Vite logo" />
-  //       </a>
-  //       <a href="https://react.dev" target="_blank">
-  //         <img src={reactLogo} className="logo react" alt="React logo" />
-  //       </a>
-  //     </div>
-  //     <h1>Vite + React</h1>
-  //     <div className="card">
-  //       <button onClick={() => setCount((count) => count + 1)}>
-  //         count is {count}
-  //       </button>
-  //       <p>
-  //         Edit <code>src/App.tsx</code> and save to test HMR
-  //       </p>
-  //     </div>
-  //     <p className="read-the-docs">
-  //       Click on the Vite and React logos to learn more
-  //     </p>
-  //   </>
-  // )
-
-function getUniqueValues(notes: Note[], key: keyof Note): string[] {
-  const values = new Set(notes.map(note => note[key]));
-  return Array.from(values); // wouldn't return id. If we want to return id, this would cause an error
-}
 
 type Note = {
   id: number;
   title: string;
-  courseNumber: string;
+  course_number: string;
   professor: string;
   semester: string;
   description: string;
 };
 
-const initialNotes: Note[] = [
-  {
-    id: 1,
-    title: "Machine Learning Fundamentals",
-    courseNumber: "CSCI 5521",
-    professor: "Catherine Zhao",
-    semester: "Spring 2024",
-    description: "CSCI 5521- Machine Learning Fundamentals - Catherine Zhao - (Spring 2024).pdf"
-  },
-  {
-    id: 2,
-    title: "Natural Language Processing",
-    courseNumber: "CSCI 5541",
-    professor: "Dongyeop Kang",
-    semester: "Spring 2024",
-    description: "CSCI 5541-Natural Language Processing-Dongyeop Kang-(Spring 2024).pdf"
-  },
-  {
-    id: 3,
-    title: "Introduction to Artificial Intelligence",
-    courseNumber: "CSCI4511W",
-    professor: "Maria Gini",
-    semester: "Spring 2024",
-    description: "CSCI4511W-Introduction to Artificial Intelligence-Maria Gini-(Spring 2024).pdf"
-  },
-  {
-    id: 4,
-    title: "Machine Learning: Analysis and Methods",
-    courseNumber: "CSCI5525",
-    professor: "Paul Schrater",
-    semester: "Spring 2024",
-    description: "CSCI5525-Machine Learning_ Analysis and Methods-Paul Schrater-(Spring 2024).pdf"
-  },
-  {
-    id: 5,
-    title: "Advanced Programming Principles",
-    courseNumber: "CSSI2041",
-    professor: "James Moen",
-    semester: "Spring 2024",
-    description: "CSSI2041-Advanced Programming Principles-James Moen-(Spring 2024).pdf"
+
+const AppContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const ContentContainer = styled.div`
+  display: flex;
+  flex-grow: 1; 
+  padding: 20px;
+`;
+
+const Sidebar = styled.div`
+  width: 250px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-right: 1px solid #ccc;
+
+  @media (max-width: 768px) {
+    width: 100px; 
   }
-];
+`;
+
+const MainContent = styled.div`
+  flex-grow: 1;
+  padding: 20px;
+`;
+
+
+function getUniqueValues(notes: Note[], key: keyof Note): string[] {
+  const values = new Set(notes.map(note => String(note[key])));
+  return Array.from(values); // wouldn't return id. If we want to return id, this would cause an error
+}
 
 
 
 function App() {
-  // const [count, setCount] = useState(0)
-  const [notes, setNotes] = useState<Note[]>(initialNotes);
-  const [filter, setFilter] = useState({ class: '', professor: '', semester: '', courseNumber: ''});
+  
+    // const [count, setCount] = useState(0)
+    const [notes, setNotes] = useState<Note[]>([]);
+    const [filter, setFilter] = useState({ class: '', professor: '', semester: '', course_number: ''});
 
-  const handleFilterChange = (filterType, value) => {
-    setFilter(prev => ({ ...prev, [filterType]: value }));
-  };
 
-  const resetFilters = (() => {
-    setFilter({ class: '', professor: '', semester: '', courseNumber: '' });
-  });
+    useEffect(() => {
+      const fetchNotes = async () => {
+        try {
+          const response = await fetch('http://localhost:3000/');
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setNotes(data);
+        } catch (error) {
+          console.error("Failed to fetch notes:", error);
+        }
+      };
+    
+      fetchNotes();
+    }, []);
 
-  // Dynamically determine the filter values
-  const filterOptions = useMemo(() => ({
-    courseNumbers: getUniqueValues(notes, 'courseNumber'),
-    professors: getUniqueValues(notes, 'professor'),
-    semesters: getUniqueValues(notes, 'semester'),
-  }), [notes]);
+    const handleFilterChange = (filterType:any, value:any) => {
+      setFilter(prev => ({ ...prev, [filterType]: value }));
+    };
 
-  return (
-    <div>
-      <Header />
-      <Filters onFilterChange={handleFilterChange} filterOptions={filterOptions} onResetFilters={resetFilters}/> {/* Don't really quite understand why need curly brackets over here */}
-      <Notes notes={notes} filter={filter}/>
-      <Footer/>
-    </div>
-  );
+    const resetFilters = (() => {
+      setFilter({ class: '', professor: '', semester: '', course_number: '' });
+    });
+    
+    // Dynamically determine the filter values
+    const filterOptions = useMemo(() => ({
+      course_number: getUniqueValues(notes, 'course_number'),
+      professors: getUniqueValues(notes, 'professor'),
+      semesters: getUniqueValues(notes, 'semester'),
+    }), [notes]);
+    console.log(getUniqueValues(notes, 'course_number'));
+
+    
+
+    // const [a,b] = useEffect(() => {
+    //   fetch('http://localhost:8080/api/notes')
+    //     .then(response => response.json())
+    //     .then(data => setNotes(data));
+    // }
+    // , []);
+    return (
+      <div>
+        <AppContainer>
+        <Header />
+
+        <ContentContainer>
+          <Sidebar>
+            <Filters onFilterChange={handleFilterChange} filterOptions={filterOptions} onResetFilters={resetFilters}/> {/* Don't really quite understand why need curly brackets over here */}
+          </Sidebar>
+
+          <MainContent>
+            <Notes notes={notes} filter={filter}/>
+          </MainContent>
+        </ContentContainer>
+
+        <Footer/>
+
+
+        </AppContainer>
+      </div>
+    );
 }
 
 export default App
+
+
+
