@@ -7,27 +7,39 @@ use dotenv::dotenv;
 use tokio;
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
-// use axum::middleware::from_fn_with_state;
+use axum::middleware::from_fn_with_state;
 
-// use sqlx::{ MySql, Pool, };
-// use sqlx::mysql::MySqlPoolOptions;
+// use sqlx;
+use sqlx::{ MySql, Pool, };
+use sqlx::mysql::MySqlPoolOptions;
+use sqlx::query;
 
 // standard library
 use std::env;
-// use std::num::ParseIntError;
+use std::num::ParseIntError;
 use std::sync::Arc;
+
+use serde::Serialize;
 // internal modules
 mod routes;
 
 pub struct AppState {
-    // db: Pool<MySql>,
+    db: Pool<MySql>,
 }
+
+#[derive(Serialize,Debug)]
+struct Department {
+    id: i32,
+    name: String,
+    code: String,
+}
+
 
 #[tokio::main]
 async fn main() {
     dotenv().ok();
 
-    // let db_url: &str = &env::var("DB_URL").expect("db url env");
+    let db_url: &str = &env::var("DB_URL").expect("db url env");
 
     let server_addr: &str = &env::var("SERVER_ADDR").expect("server addr env");
     let client_addr: &str = &env::var("CLIENT_ADDR").expect("client addr env");
@@ -42,14 +54,20 @@ async fn main() {
         .allow_credentials(true)
         .allow_headers([AUTHORIZATION, ACCEPT, CONTENT_TYPE]);
 
-    // let db: Pool<MySql> = MySqlPoolOptions::new()
-    //     .connect(db_url)
-    //     .await
-    //     .expect("database connection");
+    let db: Pool<MySql> = MySqlPoolOptions::new()
+        .connect(db_url)
+        .await
+        .expect("database connection");
 
     let state: Arc<AppState> = Arc::new(AppState {
-        // db,
+        db,
     });
+
+    let result = sqlx::query_as!(Department,"SELECT id, name, code FROM department")
+    .fetch_one(&state.db)
+    .await;
+
+
 
     // let auth_secret: Arc<str> = Arc::from(auth_secret);
 

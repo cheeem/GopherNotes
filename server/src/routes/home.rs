@@ -3,6 +3,13 @@ use serde::Serialize;
 
 
 #[derive(Serialize)]
+struct Department {
+    id: i32,
+    name: String,
+    code: String,
+}
+
+#[derive(Serialize)]
 pub struct Note {
     id: u32,
     title: String,
@@ -13,6 +20,7 @@ pub struct Note {
 }
 
 pub async fn get_notes() -> response::Json<Vec<Note>> {
+    
     let initial_notes: Vec<Note> = vec![
     Note {
         id: 1,

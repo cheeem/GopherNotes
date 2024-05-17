@@ -14,7 +14,7 @@ const Logo = styled.img`
 `;
 
 const SearchBar = styled.input`
-  width: 40%;
+  width: 60%;
   padding: 10px;
 `;
 
@@ -29,7 +29,7 @@ const Button = styled.button`
 const Header = () => {
   return (
     <HeaderContainer>
-      <Logo src="/path-to-your-logo.png" alt="University Logo (I'm actually not sure if we can use university picture)" />
+      <Logo src="/path-to-your-logo.png" alt="Logo" />
       <SearchBar type="text" placeholder="Search notes..." />
       <div>
         <Button>Login</Button>
