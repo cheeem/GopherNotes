@@ -1,0 +1,72 @@
+nav {
+    --nav-txt-color: var(--dark1);
+    --nav-bkg-color: var(--light1);
+
+    z-index: 5;
+    position: fixed;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    height: var(--nav-height);
+    width: 100%;
+
+    padding: 0 var(--side-padding);
+
+    background-color: var(--nav-bkg-color);
+}
+
+nav h5 {
+    font-size: 1.3em;
+    font-weight: 800;
+}
+
+nav ul {
+    display: flex;
+    gap: 3em;
+}
+
+nav ul a {
+    display: grid;
+    place-items: center;
+
+    /* padding: 1.5em 0; */
+
+    color: var(--nav-txt-color);
+    font-weight: 600;
+}
+
+nav li {
+    position: relative;
+}
+
+
+nav li::after {
+    position: absolute;
+    left: 0;
+    bottom: -0.6em;
+
+    width: 0;
+    height: 0.1em;
+
+    background-color: var(--nav-txt-color);
+
+    content: "";
+
+    border-radius: 1em;
+
+    transition: width 0.2s ease;
+}
+
+nav li:hover::after {
+    width: 100%;
+}
+
+nav li:has(a:focus)::after {
+    width: 100%;
+}
+
+nav .active::after {
+    width: 100%;
+}

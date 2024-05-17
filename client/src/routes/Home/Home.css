@@ -1,0 +1,212 @@
+#home .hero {
+    position: relative;
+
+    display: grid;
+    gap: 7.5vh;
+
+    /* min-height: 40vh; */
+
+    padding: 7.5vh var(--side-padding) 7.5vh var(--side-padding);
+
+    background: linear-gradient(to bottom right, var(--highlight1), var(--highlight2));
+}
+
+#home header {
+    display: grid;
+    gap: 1em;
+}
+
+#home header h1 {
+    font-size: 5em;
+    font-weight: 800;
+    color: var(--light1);
+
+    translate: -0.05em;
+}
+
+#home header h3 {
+    color: var(--light1);
+}
+
+#home .hero .body {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2.5em;
+}
+
+#home .search {
+    flex: 2;
+}
+
+#home .search-options {
+    overflow: hidden;
+
+    display: flex;
+    gap: 0.2em;
+
+    width: fit-content;
+
+    margin-bottom: 0.2em;
+
+    border-radius: 1em 1em 0 0;
+}
+
+#home .search-options h5 {
+    padding: 0.25em var(--field-padding-x);
+
+    font-weight: 600;
+    color: var(--light1);
+
+    border: 0.2em solid var(--light1);
+    border-radius: 1em 0 0 0;
+}
+
+#home .search-options button {
+    padding: 0.25em var(--field-padding-x);
+
+    background-color: var(--light1);
+
+    font-weight: 600;
+}
+
+#home .search-options .active {
+    background-color: var(--dark1);
+
+    color: var(--light1);
+}
+
+#home .search-input {
+    position: relative;
+}
+
+#home .search-input img {
+    position: absolute; 
+    top: 50%;
+    left: var(--field-padding-x);
+
+    width: 1.5em;
+    height: 1.5em;
+
+    translate: 0 -50%;
+}
+
+#home .search-input input {
+    width: 100%;
+
+    padding: var(--field-padding-y) var(--field-padding-x) var(--field-padding-y) calc(2 * var(--field-padding-x));
+
+    background-color: var(--light1);
+
+    font-weight: 600;
+
+    border: none;
+    /* border-bottom: */
+    border-radius: 0 1em 1em 1em;
+}
+
+#home .or {
+    padding: var(--field-padding-y) 0;
+}
+
+#home .or p {
+    font-style: italic;
+    font-weight: 800;
+    font-size: 1.5em;
+    color: var(--light1);
+}
+
+#home .post {
+    flex: 1;
+}
+
+#home .post button {
+    width: 100%;
+
+    padding: var(--field-padding-y) var(--field-padding-x);
+
+    background-color: var(--dark1);
+
+    font-weight: 800;
+    color: var(--light1);
+
+    border-radius: 1em;
+}
+
+#home .courses {
+    padding: 3em var(--side-padding);
+
+    background-color: var(--light2);
+}
+
+#home .sort-options {
+    overflow: hidden;
+
+    display: flex;
+    gap: 0.2em;
+
+    width: fit-content;
+
+    border-radius: 1em;
+}
+
+#home .sort-options button {
+    padding: 0.5em var(--field-padding-x);
+
+    background-color: var(--dark1);
+
+    font-weight: 600;
+    color: var(--light1);
+}
+
+#home .sort-options .active {
+    background-color: var(--highlight2);
+}
+
+#home .courses ul {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5em;
+
+    padding-top: 1.5em;
+}
+
+#home .courses li {
+    display: grid;
+    place-content: center;
+
+    padding: 2.5em; 
+
+    background-color: var(--light1);
+
+    border-radius: 1em;
+}
+
+#home .courses li > div {
+    display: grid;
+    gap: 1.5em;
+
+    width: 15em;
+}
+
+#home .courses li * {
+    text-align: center;
+}
+
+#home li .desc {
+    display: grid;
+    gap: 0.5em;
+}
+
+#home .courses li button {
+    width: 100%;
+
+    padding: 0.5em;
+
+    background-color: var(--dark1);
+    
+    font-weight: 600;
+    color: var(--light1);
+
+    border-radius: 1em;
+}
