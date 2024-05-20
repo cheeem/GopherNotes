@@ -12,7 +12,6 @@ use sqlx::{ MySql, Pool, };
 use sqlx::mysql::MySqlPoolOptions;
 // standard library
 use std::env;
-use std::num::ParseIntError;
 use std::sync::Arc;
 // internal modules
 mod routes;
@@ -46,11 +45,9 @@ async fn main() {
         db,
     });
 
-    // let auth_secret: Arc<str> = Arc::from(auth_secret);
-
     let app: Router = Router::new() 
-        .route("/", get(routes::home::get_classes))
-        // .route("/client/my/balance/", get(client::balance::balance).route_layer(from_fn_with_state(auth_secret.clone(), utils::auth::auth)))
+        .route("/home/get_classes_by_code", get(routes::home::get_classes_by_code))
+        .route("/home/get_classes_by_professor", get(routes::home::get_classes_by_professor))
         .layer(cors)
         .with_state(state.clone());
 
