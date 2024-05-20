@@ -7,7 +7,7 @@ function Nav() {
 
     return (
         <nav>
-            <h5> GopherNotes </h5>
+            <h5> Gopher<span>Notes</span> </h5>
             <ul> 
                 <li className="active"><a href="">Home</a></li>
                 <li><a href="">Post</a></li>

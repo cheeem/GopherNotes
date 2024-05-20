@@ -68,6 +68,8 @@
     background-color: var(--light1);
 
     font-weight: 600;
+
+    /* transition: background-color 0.2s ease, color 0.2s ease; */
 }
 
 #home .search-options .active {
@@ -131,6 +133,12 @@
     color: var(--light1);
 
     border-radius: 1em;
+
+    transition: background-color 0.2s ease;
+}
+
+#home .post button:hover {
+    background-color: var(--dark2);
 }
 
 #home .courses {
@@ -172,8 +180,8 @@
 }
 
 #home .courses li {
-    display: grid;
-    place-content: center;
+    display: flex;
+    justify-content: center;
 
     padding: 2.5em; 
 
@@ -201,6 +209,7 @@
 #home .courses li button {
     width: 100%;
 
+    margin-top: auto;
     padding: 0.5em;
 
     background-color: var(--dark1);
@@ -209,4 +218,10 @@
     color: var(--light1);
 
     border-radius: 1em;
+
+    transition: background-color 0.2s ease;
+}
+
+#home .courses li button:hover {
+    background-color: var(--dark2);
 }

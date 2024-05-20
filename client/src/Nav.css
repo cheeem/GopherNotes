@@ -22,6 +22,10 @@ nav h5 {
     font-weight: 800;
 }
 
+nav h5 span {
+    color: var(--highlight2);
+}
+
 nav ul {
     display: flex;
     gap: 3em;
@@ -40,7 +44,6 @@ nav ul a {
 nav li {
     position: relative;
 }
-
 
 nav li::after {
     position: absolute;
