@@ -1,6 +1,4 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import styled from 'styled-components';
 import './App.css'
 import Header from './components/Header';
@@ -66,7 +64,7 @@ function App() {
     useEffect(() => {
       const fetchNotes = async () => {
         try {
-          const response = await fetch('http://localhost:3000/');
+          const response = await fetch('http://localhost:3000/get_classes?input=csci');
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }

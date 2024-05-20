@@ -72,6 +72,8 @@ async fn main() {
     // let auth_secret: Arc<str> = Arc::from(auth_secret);
 
     let app: Router = Router::new()
+        .route("/classes", get(routes::class::get_classes))
+        .route("/professors", get(routes::professor::get_professors))
         .route("/", get(routes::home::get_notes))
         // .route("/client/my/balance/", get(client::balance::balance).route_layer(from_fn_with_state(auth_secret.clone(), utils::auth::auth)))
         .layer(cors)
@@ -84,5 +86,7 @@ async fn main() {
         listener.local_addr().expect("local addr")
     );
 
-    axum::serve(listener, app).await.expect("axum serve");
+    axum::serve(listener, app)
+    .await
+    .expect("axum serve");
 }
