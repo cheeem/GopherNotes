@@ -1,4 +1,5 @@
 import { useState, useEffect, ChangeEvent } from "react";
+import { Link } from "react-router-dom";
 import "./Home.css";
 import svg_search from "../../img/Search.svg";
 
@@ -10,11 +11,6 @@ type UMNClass = {
 }
 
 type SearchOption = {
-    display: string,
-    query: string,
-}
-
-type SortOptions = {
     display: string,
     query: string,
 }
@@ -57,14 +53,14 @@ const searchOptions: ReadonlyArray<SearchOption> = [
     { display: "Professor", query: "professor" },
 ] as const;
 
-const sortOptions: ReadonlyArray<SortOptions> = [
-    { display: "Recently Visited", query: "" },
-    { display: "Popular", query: "" },
+const sortOptions: ReadonlyArray<string> = [
+    "Recently Visited",
+    "Popular",
 ] as const;
 
-export default function Home() {
+export default function Home(): JSX.Element {
 
-    const [classes, setClasses] = useState<UMNClass[] | null>(null)
+    const [classes, setClasses] = useState<UMNClass[] | null>(null);
     const [searchOptionActive, setSearchOptionActive] = useState(0);
     const [sortOptionActive, setSortOptionActive] = useState(0);
 
@@ -91,7 +87,7 @@ export default function Home() {
                         <p>or</p>
                     </div>
                     <div className="post">
-                        <button>Post Your Own Notes</button>
+                        <Link to="/post"><p>Post Your Own Notes</p></Link>
                     </div>
                 </div>
             </section>
@@ -103,10 +99,11 @@ export default function Home() {
     )
 }
 
-function SearchOptions(props: { active: number, setActive: React.Dispatch<React.SetStateAction<number>> }) {
+function SearchOptions(props: { active: number, setActive: React.Dispatch<React.SetStateAction<number>> }): JSX.Element {
 
     const options: JSX.Element[] = searchOptions.map((searchOption: SearchOption, index: number) => (
         <button 
+            key={index}
             className={optionActiveClass(props.active, index)} 
             onClick={() => props.setActive(index)}
         > {searchOption.display}
@@ -122,13 +119,14 @@ function SearchOptions(props: { active: number, setActive: React.Dispatch<React.
 
 }
 
-function SortOptions(props: { active: number, setActive: React.Dispatch<React.SetStateAction<number>> }) {
+function SortOptions(props: { active: number, setActive: React.Dispatch<React.SetStateAction<number>> }): JSX.Element {
 
-    const options: JSX.Element[] = sortOptions.map((sortOption: SortOptions, index: number) => (
+    const options: JSX.Element[] = sortOptions.map((display: string, index: number) => (
         <button 
+            key={index}
             className={optionActiveClass(props.active, index)} 
             onClick={() => props.setActive(index)}
-        > {sortOption.display}
+        > {display}
         </button>
     ));
 
@@ -140,7 +138,7 @@ function SortOptions(props: { active: number, setActive: React.Dispatch<React.Se
 
 }
 
-function ClassList(props: { classes: UMNClass[] | null }) {
+function ClassList(props: { classes: UMNClass[] | null }): JSX.Element | null {
     
     if(props.classes === null) {
         return null; // loading state
@@ -150,7 +148,7 @@ function ClassList(props: { classes: UMNClass[] | null }) {
 
 }
 
-function Class(umn_class: UMNClass, index: number) {
+function Class(umn_class: UMNClass, index: number): JSX.Element {
     return (
         <li key={index}>
             <div>
@@ -158,15 +156,17 @@ function Class(umn_class: UMNClass, index: number) {
                     <h3> {umn_class.department_code} {umn_class.class_code} </h3>
                     <p> {umn_class.name} </p>
                 </div>
-                <button>
-                    View All {umn_class.post_count} Posts
-                </button>
+                <div className="link">
+                    <Link to={`/${umn_class.department_code}/${umn_class.class_code}`}>
+                        <p> View All {umn_class.post_count} Posts </p>
+                    </Link>
+                </div>
             </div>
         </li>
     )
 }
 
-function optionActiveClass(active: number, searchOption: number) {
+function optionActiveClass(active: number, searchOption: number): string {
     
     if(active === searchOption) {
         return "active"

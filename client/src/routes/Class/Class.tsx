@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import "./Class.css";
 import svg_search from "../../img/Search.svg";
 
-export default function Class() {
+export default function Class(): JSX.Element {
+
+    const params = useParams();
+
+    const department_code: string = params.department_code!;
+    const class_code: string = params.class_code!;
 
     return (
         <article id="class">
             <section className="hero">
                 <header>
-                    <h1>CSCI 1103</h1>
+                    <h1>{department_code} {class_code}</h1>
                     <h3>Introduction to Computer Programming in Java</h3>
                 </header>
                 <div className="search">
@@ -23,7 +29,7 @@ export default function Class() {
                     </div>
                 </div>
             </section>
-            <section>
+            <section className="posts">
                 <ul>
                     
                 </ul>

@@ -1,5 +1,5 @@
-#class {
-    background-color: var(--highlight2);
+#class .posts {
+    background-color: var(--light2);
 }
 
 #class .hero {
@@ -95,3 +95,4 @@
     /* border-bottom: */
     border-radius: 0 1em 1em 1em;
 }
+
