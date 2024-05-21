@@ -2,7 +2,26 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import Select from 'react-select';;
+import { useDropzone } from 'react-dropzone';
+import "../Upload.css";
 
+
+
+const Dropzone = styled.div`
+  flex: 1;
+  display: flex;
+  flexDirection: column;
+  alignItems: center;
+  padding: 20px;
+  borderWidth: 2px;
+  borderRadius: 2px;
+  border-style: dashed;
+  borderColor: '#eeeeee';
+  backgroundColor: '#fafafa';
+  color: '#bdbdbd';
+  outline: 'none';
+  transition: border .24s ease-in-out;
+`;
 
 
 const Container = styled.div`
@@ -59,7 +78,15 @@ interface OptionType {
     value: string;
   }
 
+const fileOptions = [
+{ label: "PDF", value: "pdf" },
+{ label: "Image", value: "image" },
+{ label: "Text/Link", value: "text" }
+];
+
+
 function UploadForm() {
+    const [fileType, setFileType] = useState('');
     const [file, setFile] = useState<File | null>(null);
     const [metadata, setMetadata] = useState({
         fileName: '',
@@ -118,16 +145,53 @@ function UploadForm() {
         { label: "Syllabus", value: "syllabus" }
     ];
 
+    const handleFileTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setFileType(event.target.value);
+    };
+
+    // Dynamically render the dropzone based on the file type selected
+    const [uploadedFile, setUploadedFile] = useState(null);
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({
+        onDrop: acceptedFiles => {
+          setUploadedFile({
+            file: acceptedFiles[0],
+            preview: URL.createObjectURL(acceptedFiles[0])
+          });
+          setFile(acceptedFiles[0]);
+          setMetadata({...metadata, fileName: acceptedFiles[0].name});
+        }
+      });
+
     return (
         <Container>
             <Form onSubmit={handleSubmit}>
                 <Title>Upload Form</Title>
-                <Input type="text" name="fileName" value={metadata.fileName} onChange={handleInputChange} placeholder="Notes Name" />
-                <Input type="text" name="department" value={metadata.department} onChange={handleInputChange} placeholder="Department Number: e.g. CSCI / MATH / MUS" required/>
-                <Input type="text" name="courseNumber" value={metadata.courseNumber} onChange={handleInputChange} placeholder="Course Number: e.g. 1001, 1301, 5801" required/>
-                <Input type="text" name="professor" value={metadata.professor} onChange={handleInputChange} placeholder="Professor" />
-                <Input type="date" name="date" value={metadata.date} onChange={handleInputChange} />
-                <Select
+                <ul>
+                    <li>
+                        <Input type="text" name="fileName" value={metadata.fileName} onChange={handleInputChange} placeholder=" " />
+                        <label htmlFor="fileName">Notes Name</label>
+                    </li>
+
+                    <li>
+                        <Input type="text" name="department" value={metadata.department} onChange={handleInputChange} placeholder=" " required/>
+                        <label htmlFor="department">Department Number: e.g. CSCI / MATH / MUS</label>
+                    </li>
+
+                    <li>
+                        <Input type="text" name="courseNumber" value={metadata.courseNumber} onChange={handleInputChange} placeholder=" " required/>
+                        <label htmlFor="courseNumber">Course Number: e.g. 1001, 1301, 5801</label>
+                    </li>
+
+                    <li>
+                        <Input type="text" name="professor" value={metadata.professor} onChange={handleInputChange} placeholder=" " />
+                        <label htmlFor="professor">Professor</label>
+                    </li>
+
+                    <li>
+                        <label htmlFor="date">Date</label>
+                        <Input type="date" name="date" value={metadata.date} onChange={handleInputChange} />
+                    </li>
+                    {/* <Select
                     isMulti
                     name="tags"
                     options={tagOptions}
@@ -136,8 +200,29 @@ function UploadForm() {
                     onChange={handleSelectChange as any}
                     placeholder="Select Tags"
                     closeMenuOnSelect={false}
-                />
-                <Input type="file" onChange={handleFileChange} />
+                /> */}
+                </ul>
+
+                <select value={fileType} onChange={handleFileTypeChange} style={{ padding: '10px', margin: '10px 0', width: '100%' }}>
+                <option value="">Select File Type</option>
+                <option value="pdf">PDF</option>
+                <option value="image">Image</option>
+                <option value="text">Text/Link</option>
+            </select>
+                
+                <Dropzone {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    {uploadedFile ? (
+                        <div>
+                        <p>File uploaded: {uploadedFile.file.name}</p>
+                        {uploadedFile.file.type.startsWith('image') && (
+                            <img src={uploadedFile.preview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '200px' }} />
+                        )}
+                        </div>
+                    ) : (
+                        <p>{isDragActive ? 'Drop the files here...' : 'Drag \'n\' drop your files here, or click to select files'}</p>
+                    )}
+                </Dropzone>
                 <Button type="submit" onClick={handleSubmit}>Upload</Button>
             </Form>
         </Container>

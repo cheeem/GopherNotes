@@ -9,7 +9,6 @@ import NotFound from "./routes/NotFound/NotFound.tsx";
 export default function App(): JSX.Element {
 
     
-
     return (
         <>
             <Nav /> 
