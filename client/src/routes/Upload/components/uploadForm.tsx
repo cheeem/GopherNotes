@@ -73,6 +73,25 @@ const Title = styled.h2`
   text-align: center;
 `;
 
+const TextArea = styled.textarea`
+  width: 100%;
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+`;
+
+const StyledSelect = styled.select`
+  width: 100%;
+  height: 40px;
+  padding: 8px 10px; 
+  margin: 10px 0 0 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+`;
+
 interface OptionType {
     label: string;
     value: string;
@@ -88,6 +107,7 @@ const fileOptions = [
 function UploadForm() {
     const [fileType, setFileType] = useState('');
     const [file, setFile] = useState<File | null>(null);
+    const [textLink, setTextLink] = useState('');
     const [metadata, setMetadata] = useState({
         fileName: '',
         courseNumber: '',
@@ -97,26 +117,29 @@ function UploadForm() {
         tags: [] as OptionType[]
     });
 
-    const handleInputChange = (event: { target: { name: any; value: any; }; }) => {
-        setMetadata({...metadata, [event.target.name]: event.target.value});
-    };
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = event.target;
+        setMetadata({...metadata, [name]: value});
+      };
 
     const handleSelectChange = (selectedOption: any) => {
         setMetadata({...metadata, tags: selectedOption});
     }
-
-    const handleFileChange = (event: any) => {
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files ? event.target.files[0] : null;
-
         if (selectedFile) {
-            setFile(event.target.files[0]);
-            setMetadata(prevMetadata => ({
-                ...prevMetadata,
-                fileName: selectedFile.name
-            })
-            )
+          setFile(selectedFile);
+          setMetadata(prevMetadata => ({
+            ...prevMetadata,
+            fileName: selectedFile.name
+          }));
         }
+      };
+
+    const handleFileTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setFileType(event.target.value);
     };
+
 
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
@@ -144,10 +167,6 @@ function UploadForm() {
         { label: "image", value: "image" },
         { label: "Syllabus", value: "syllabus" }
     ];
-
-    const handleFileTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setFileType(event.target.value);
-    };
 
     // Dynamically render the dropzone based on the file type selected
     const [uploadedFile, setUploadedFile] = useState(null);
@@ -203,12 +222,16 @@ function UploadForm() {
                 /> */}
                 </ul>
 
-                <select value={fileType} onChange={handleFileTypeChange} style={{ padding: '10px', margin: '10px 0', width: '100%' }}>
-                <option value="">Select File Type</option>
-                <option value="pdf">PDF</option>
-                <option value="image">Image</option>
-                <option value="text">Text/Link</option>
-            </select>
+                <StyledSelect value={fileType} onChange={handleFileTypeChange}>
+                    <option value="">Select Notes File Type</option>
+                    <option value="pdf">PDF</option>
+                    <option value="image">Image</option>
+                    <option value="text">Text/Link</option>
+                </StyledSelect>
+            {fileType === 'text' ? (
+                <TextArea name="textLink" value={textLink} onChange={(e) => setTextLink(e.target.value)} placeholder="Enter your text or link here" />
+                ) : (
+                fileType && 
                 
                 <Dropzone {...getRootProps()}>
                     <input {...getInputProps()} />
@@ -223,6 +246,7 @@ function UploadForm() {
                         <p>{isDragActive ? 'Drop the files here...' : 'Drag \'n\' drop your files here, or click to select files'}</p>
                     )}
                 </Dropzone>
+                )}
                 <Button type="submit" onClick={handleSubmit}>Upload</Button>
             </Form>
         </Container>
