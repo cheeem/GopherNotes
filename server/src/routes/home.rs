@@ -33,7 +33,7 @@ pub async fn get_classes_by_code(State(state): State<Arc<AppState>>, Query(Class
             JOIN departments ON departments.id = classes.department_id 
             LEFT JOIN posts on posts.class_id = classes.id 
             GROUP BY departments.id, classes.id 
-            HAVING LOWER(CONCAT(departments.code, \" \", classes.code)) LIKE LOWER(?) 
+            HAVING LOWER(CONCAT(departments.code, classes.code)) LIKE LOWER(?) 
         ",
         None => "
             SELECT 
@@ -48,11 +48,9 @@ pub async fn get_classes_by_code(State(state): State<Arc<AppState>>, Query(Class
         "
     };
 
-    println!("{sql}");
-
     let mut query: sqlx::query::QueryAs<MySql, Class, MySqlArguments> = sqlx::query_as(sql);
 
-    if let Some(input) = input {
+    if let Some(input) = input.map(|str| str.replace(' ', "")) {
         query = query.bind(format!("%{input}%"));
     }
     
@@ -89,15 +87,11 @@ pub async fn get_classes_by_professor(State(state): State<Arc<AppState>>, Query(
                 classes.name, 
                 CAST(COUNT(posts.id) AS UNSIGNED) AS post_count 
             FROM classes 
-            JOIN professor_classes ON professor_classes.class_id = classes.id
-            JOIN professors ON professors.id = professor_classes.professor_id
             JOIN departments ON departments.id = classes.department_id 
             LEFT JOIN posts on posts.class_id = classes.id 
             GROUP BY departments.id, classes.id 
         "
     };
-
-    println!("{sql}");
 
     let mut query: sqlx::query::QueryAs<MySql, Class, MySqlArguments> = sqlx::query_as(sql);
 
