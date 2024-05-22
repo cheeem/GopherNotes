@@ -1,7 +1,32 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./Class.css";
 import svg_search from "../../img/Search.svg";
+import SortBar from "./components/SortBar";
+import Filter from "./components/Filters";
+import styled from "styled-components";
+import PostsGrid from "./components/PostsGrid";
+
+const StyledApp = styled.div`
+//   background-color: #f0f0f0;
+  margin: 2% 10% 100px 10%;
+  padding: 0 0 100px 0;
+`;
+
+const MainContent = styled.div`
+align-items: center;
+justify-content: flex-start;
+background-color: white;
+border-radius: 10px;
+
+padding: 20px;
+// box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+// overflow: hidden;  // Contain all child elements within this element
+`;
+
+
+
+
 
 export default function Class(): JSX.Element {
 
@@ -11,6 +36,7 @@ export default function Class(): JSX.Element {
     const class_code: string = params.class_code!;
 
     return (
+        <>
         <article id="class">
             <section className="hero">
                 <header>
@@ -28,12 +54,17 @@ export default function Class(): JSX.Element {
                         <input type="text" name="input" />
                     </div>
                 </div>
+                <Filter />
             </section>
-            <section className="posts">
-                <ul>
-                    
-                </ul>
-            </section>
+
         </article>
+        <StyledApp>
+        <MainContent>
+            <SortBar />
+            <PostsGrid />
+            {/* <section className="posts"></section> */}
+        </MainContent>
+    </StyledApp>
+        </>
     )
 }
