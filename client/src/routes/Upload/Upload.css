@@ -1,0 +1,187 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;500;600;800;900");
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+
+	font-family: "Montserrat", sans-serif;
+	color: var(--neutral3);
+}
+
+:root {
+	--neutral1: white;
+	--neutral2: hsl(0, 0%, 97%);
+	--neutral3: hsl(238, 83%, 14%);
+	--neutral4: hsl(238, 83%, 16%);
+	--primary1: hsl(249, 38%, 25%);
+	--primary2: hsl(249, 38%, 32%);
+	--primary3: hsl(249, 100%, 92%);
+
+	--invalid: hsl(0, 100%, 95%);
+
+	--neutral1-filter: invert(100%) sepia(0%) saturate(2%) hue-rotate(204deg)
+		brightness(104%) contrast(101%);
+	--neutral3-filter: invert(8%) sepia(41%) saturate(7494%) hue-rotate(240deg)
+		brightness(62%) contrast(108%);
+
+	--side-padding: 10vw;
+}
+
+a {
+	text-decoration: none;
+}
+
+li {
+	list-style-type: none;
+}
+
+button {
+	--_btn-main-color: var(--btn-main-color, var(--neutral3));
+	--_btn-alt-color: var(--btn-alt-color, var(--neutral1));
+
+	padding: 0.75em 1.5em;
+
+	width: fit-content;
+
+	background-color: var(--_btn-alt-color);
+
+	font-size: 1em;
+	font-weight: 600;
+	color: var(--_btn-main-color);
+
+	border: 0.1rem solid var(--_btn-main-color);
+	/* border-radius: 1em; */
+
+	cursor: pointer;
+
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+button:hover {
+	background-color: var(--_btn-main-color);
+
+	color: var(--_btn-alt-color);
+}
+
+
+#posts {
+	width: 50%;
+
+	display: flex;
+	flex-wrap: wrap;
+}
+
+#posts li {
+	/* flex-basis: 10em; */
+
+	padding: 2em;
+
+	width: fit-content;
+}
+
+#posts li img {
+	width: 10em;
+	height: 10em;
+
+	object-fit: cover;
+}
+
+form {
+	--form-gap: 2em;
+	--field-active-top: -0.75em;
+	--field-padding-y: 1em;
+	--field-padding-x: 2em;
+
+	flex: 30em 1 1;
+
+	display: grid;
+	gap: var(--form-gap);
+
+	height: fit-content;
+
+	padding: 2em;
+}
+
+form ul {
+	display: grid;
+	gap: var(--form-gap);
+}
+
+form ul li {
+	position: relative;
+}
+
+input,
+textarea {
+	padding: var(--field-padding-y) var(--field-padding-x);
+
+	width: 100%;
+
+	background-color: var(--neutral2);
+
+	font-size: 1em;
+
+	border: none;
+
+	outline: none;
+}
+
+input[type="text"]:invalid {
+	background-color: var(--invalid);
+}
+
+input[type="text"]:placeholder-shown {
+	background-color: var(--neutral2);
+}
+
+input[type="text"]:focus {
+	background-color: var(--neutral2);
+}
+
+input[type="text"] ~ label {
+	position: absolute;
+	top: var(--field-active-top);
+	left: var(--field-padding-x);
+
+	font-weight: 600;
+
+	pointer-events: none;
+
+	transition: top 0.2s ease;
+}
+
+input[type="text"]:placeholder-shown ~ label {
+	top: var(--field-padding-y);
+}
+
+input[type="text"]:focus ~ label {
+	top: var(--field-active-top);
+}
+
+form .submit {
+	display: flex;
+	align-items: center;
+	gap: 1.5em;
+}
+
+form button {
+	--btn-main-color: var(--neutral3);
+	--btn-alt-color: var(--neutral2);
+
+	padding-left: 2.5em;
+	padding-right: 2.5em;
+
+	border: none;
+}
+
+form:invalid button {
+	--btn-main-color: var(--neutral1);
+
+	cursor: not-allowed;
+}
+
+form:invalid button:hover {
+	background-color: var(--btn-alt-color);
+	color: var(--btn-main-color);
+}

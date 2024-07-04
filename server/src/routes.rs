@@ -1,3 +1,3 @@
 pub mod home;
-pub mod class;
-pub mod professor;
+pub mod upload;
+pub mod posts;

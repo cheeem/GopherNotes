@@ -1,0 +1,11 @@
+/Users/jiazhenghao/Desktop/CodingProjects_new/GopherNotes/server/target/debug/deps/libsqlx-9a59a17adffee083.rmeta: /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/lib.rs /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/any/mod.rs /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/macros/mod.rs /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/ty_match.rs /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/lib.md /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/macros/test.md /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/any/install_drivers_note.md
+
+/Users/jiazhenghao/Desktop/CodingProjects_new/GopherNotes/server/target/debug/deps/sqlx-9a59a17adffee083.d: /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/lib.rs /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/any/mod.rs /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/macros/mod.rs /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/ty_match.rs /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/lib.md /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/macros/test.md /Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/any/install_drivers_note.md
+
+/Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/lib.rs:
+/Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/any/mod.rs:
+/Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/macros/mod.rs:
+/Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/ty_match.rs:
+/Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/lib.md:
+/Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/macros/test.md:
+/Users/jiazhenghao/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sqlx-0.7.4/src/any/install_drivers_note.md:

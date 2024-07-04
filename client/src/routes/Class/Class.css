@@ -1,0 +1,147 @@
+#class .posts {
+    background-color: var(--light2);
+}
+
+#class .hero {
+    position: relative;
+
+    display: grid;
+    gap: 7.5vh;
+
+    padding: 7.5vh var(--side-padding) 7.5vh var(--side-padding);
+
+    background: linear-gradient(to bottom right, var(--highlight1), var(--highlight2));
+}
+
+#class header {
+    display: grid;
+    gap: 1em;
+}
+
+#class header h1 {
+    font-size: 5em;
+    font-weight: 800;
+    color: var(--light1);
+
+    translate: -0.05em;
+}
+
+#class header h3 {
+    color: var(--light1);
+}
+
+#class .search-options {
+    overflow: hidden;
+
+    display: flex;
+    gap: 0.2em;
+
+    width: fit-content;
+
+    margin-bottom: 0.2em;
+
+    border-radius: 1em 1em 0 0;
+}
+
+#class .search-options h5 {
+    padding: 0.25em var(--field-padding-x);
+
+    font-weight: 600;
+    color: var(--light1);
+
+    border: 0.2em solid var(--light1);
+    border-radius: 1em 0 0 0;
+}
+
+#class .search-options button {
+    padding: 0.25em var(--field-padding-x);
+
+    background-color: var(--light1);
+
+    font-weight: 600;
+}
+
+#class .search-options .active {
+    background-color: var(--dark1);
+
+    color: var(--light1);
+}
+
+#class .search-input {
+    position: relative;
+}
+
+#class .search-input img {
+    position: absolute; 
+    top: 50%;
+    left: var(--field-padding-x);
+
+    width: 1.5em;
+    height: 1.5em;
+
+    translate: 0 -50%;
+}
+
+#class .search-input input {
+    width: 100%;
+
+    padding: var(--field-padding-y) var(--field-padding-x) var(--field-padding-y) calc(2 * var(--field-padding-x));
+
+    background-color: var(--light1);
+
+    font-weight: 600;
+
+    border: none;
+    /* border-bottom: */
+    border-radius: 0 1em 1em 1em;
+}
+
+
+
+/* CSS for formatting the notes grid */
+
+  
+  .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 1.5rem;
+    flex-grow: 1;
+    
+  }
+
+  .notes-grid .notes-tile {
+    border-radius: 1em;
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    height: 100%;
+  }
+
+  .notes-grid .notes-tile img {
+
+
+    padding: 1.5em;
+  }
+
+
+
+  .notes-grid .notes-tile h3 {
+
+
+    padding: 1.5em;
+  }
+
+  .notes-grid .notes-tile p {
+
+
+    padding: 1.5em;
+  }
+  
+  
+  .footer {
+    padding: 1rem;
+    background-color: #f0f0f0;
+    text-align: center;
+  }
+
