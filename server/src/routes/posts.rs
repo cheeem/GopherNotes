@@ -1,36 +1,40 @@
 use axum::extract::{ State, Query };
 use axum::response;
 use axum::http::StatusCode;
-use sqlx::types::chrono;
+// use sqlx::types::chrono;
 use sqlx::{Database, FromRow};
 use sqlx::mysql::{ MySql, MySqlArguments };
 use serde::{ Deserialize, Serialize };
 use std::sync::Arc;
 use crate::AppState;
+// use sqlx::types::chrono::{DateTime, Utc};
 use chrono::{DateTime, Utc};
 
 
-
-#[derive(Serialize, FromRow)]
+#[derive(Serialize, FromRow, Deserialize)]
 pub struct Post {
     id: i32,
+    title: String,
     file_type: String,
     path: String,
+    // #[serde(with = "ts_seconds_option")]
+    // dt: DateTime<Utc>,
+    #[serde(with = "chrono::serde::ts_seconds")]
     dt: DateTime<Utc>,
-    class_name: String,
-    department_name: String, 
-    professor_name: String
+    professor_name: String, // TODO: add text field
 }
 
 #[derive(Deserialize)]
 pub struct PostSearch {
-    input: Option<String>,
+    department_code: String,
+    class_code: String, // TODO, add professor, tags, weeks tags
+    // professor: String,
 }
 
 
 pub async fn get_posts_by_class_and_department(
     State(state): State<Arc<AppState>>, 
-    Query(PostSearch{input}): Query<PostSearch>
+    Query(PostSearch{department_code,class_code}): Query<PostSearch>
 ) -> Result<response::Json<Vec<Post>>, StatusCode> {
     let sql = "SELECT 
     posts.id,
@@ -38,21 +42,22 @@ pub async fn get_posts_by_class_and_department(
     posts.file_type,
     posts.path,
     posts.dt,
-    classes.name AS class_name,
-    departments.name AS department_name,
     professors.name AS professor_name
     FROM posts
     JOIN classes ON posts.class_id = classes.id
     JOIN departments ON classes.department_id = departments.id
     LEFT JOIN professors ON posts.professor_id = professors.id
-    WHERE CONCAT(departments.code, classes.code) LIKE ?";
+    WHERE departments.code = ?
+    AND classes.code = ?";
 
 
     let mut query: sqlx::query::QueryAs<MySql, Post, MySqlArguments> = sqlx::query_as(sql);
     
-    if let Some(input) = input.map(|str| str.replace(' ', "")) {
-        query = query.bind(format!("%{input}%"));
-    }
+    // if let department_code = department_code.map(|str| str.replace(' ', "")) {
+    query = query
+                .bind(department_code.to_uppercase())
+                .bind(class_code.to_uppercase());
+    // }
 
 
     let posts: Vec<Post> = query

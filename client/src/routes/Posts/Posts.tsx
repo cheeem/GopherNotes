@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import "./Class.css";
+import "./Posts.css";
 import svg_search from "../../img/Search.svg";
 import SortBar from "./components/SortBar";
 import Filter from "./components/Filters";
@@ -34,20 +34,26 @@ type Post = {
     professor_name: String
 }
 
-
 type SearchOption = {
     display: string,
     query: string,
+    department_code: string, 
+    class_code: string
 }
 
-async function getPosts(input: string | null, searchOptionActive: number, setClasses: React.Dispatch<React.SetStateAction<Post[] | null>>) {
+const searchOptions: ReadonlyArray<SearchOption> = [
+    { display: "Class Code", query: "code", department_code: "5521", class_code: "CSCI" },
+    { display: "Professor", query: "professor", department_code: "5521", class_code: "CSCI"  },
+] as const;
+
+async function getPosts(department_code: string | null, class_code: string | null, searchOptionActive: number, setPosts: React.Dispatch<React.SetStateAction<Post[] | null>>) {
 
     const searchBy: string = searchOptions[searchOptionActive].query;
 
-    let url: string = `http://localhost:3000/home/get_posts_by${searchBy}`
+    let url: string = `http://localhost:3000/home/get_posts_by_classes_and_department`
     
-    if(input) {
-        url += `?input=${input}`
+    if(class_code && department_code) {
+        url += `?department_code=${department_code}&class_code=${class_code}`
     }
 
     try {
@@ -60,19 +66,27 @@ async function getPosts(input: string | null, searchOptionActive: number, setCla
         
         const posts: Post[] = await res.json();
         
-        setClasses(classes);
+        setPosts(posts);
 
     } catch(_) {}
 
 }
 
 
-export default function Class(): JSX.Element {
+export default function Posts(): JSX.Element {
+    // TODO: handle changing sortOptions and SearchOptions
 
     const params = useParams();
-
     const department_code: string = params.department_code!;
     const class_code: string = params.class_code!;
+
+    const [posts, setPosts] = useState<Post[] | null>(null);
+    const [searchOptionActive, setSearchOptionActive] = useState(0);
+    const [sortOptionActive, setSortOptionActive] = useState(0);
+
+    useEffect(() => {
+        getPosts(department_code, class_code, searchOptionActive, setPosts);
+    }, [sortOptionActive])
 
     return (
         <>
@@ -101,7 +115,7 @@ export default function Class(): JSX.Element {
         <StyledApp>
         <MainContent>
             <SortBar />
-            <PostsGrid />
+            <PostsGrid posts={posts}/>
             {/* <section className="posts"></section> */}
         </MainContent>
     </StyledApp>

@@ -1,0 +1,13 @@
+div.GridContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+div.PostsCard {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    background: #fff;
+    width: 200px;
+}

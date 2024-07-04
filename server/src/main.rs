@@ -59,7 +59,7 @@ async fn main() {
     let app: Router = Router::new() 
         .route("/home/get_classes_by_code", get(routes::home::get_classes_by_code))
         .route("/home/get_classes_by_professor", get(routes::home::get_classes_by_professor))
-        .route("/home/get_posts_by", get(routes::posts::get_posts_by_class_and_department))
+        .route("/home/get_posts_by_classes_and_department", get(routes::posts::get_posts_by_class_and_department))
         // .route("/upload/upload", post(routes::upload::upload))
         .layer(cors)
         .with_state(state.clone());

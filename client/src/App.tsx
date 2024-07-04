@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import Nav from "./Nav.tsx";
 import Home from "./routes/Home/Home.tsx";
-import Class from "./routes/Class/Class.tsx";
+import Class from "./routes/Posts/Posts.tsx";
 import Upload from "./routes/Upload/Upload.tsx";
 import NotFound from "./routes/NotFound/NotFound.tsx";
 
