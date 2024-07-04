@@ -1,21 +1,14 @@
 // components/NotesGrid.tsx
 import React from 'react';
 import "./PostsGrid.css";
-
-
-type Post = {
-  id: number,
-  file_type: String,
-  path: String,
-  dt: String, // TODO: Needs modification
-  class_name: String,
-  department_name: String, 
-  professor_name: String
-}
+import { Post } from '../Posts';
 
 
 type PostsGridProps = {
-  posts: Post[] | null;
+  posts: Post[] | null,
+  // department_code: String,
+  // class_code: String,
+  
 }
 
 const PostsGrid: React.FC<PostsGridProps> = ({posts}) => {
@@ -23,16 +16,16 @@ const PostsGrid: React.FC<PostsGridProps> = ({posts}) => {
     return <p>No posts available. Be the first to contribute notes to this class!</p>;
   }
   return (
-    <div className="GridContainer">
+    <section className="notes-grid">
                   {posts.map(post => (
-                <div className='PostCard' key={post.id}>
-                    <h3>{post.class_name}</h3>
+                <div className='notes-title' key={post.id}>
+                    <h3>{post.title}</h3>
                     <p>Professor: {post.professor_name}</p>
-                    <p>Department: {post.department_name}</p>
+                    {/* <p>Department: {post.department_name}</p> */}
                     <p>Date: {post.dt}</p>
                 </div>
             ))}
-    </div>
+    </section>
     // <section className="notes-grid">
     //       <div className="notes-tile">
     //         <img src="notes1.jpg" alt="notes 1" />

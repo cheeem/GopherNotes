@@ -24,13 +24,13 @@ padding: 20px;
 // overflow: hidden;  // Contain all child elements within this element
 `;
 
-type Post = {
+export type Post = {
     id: number,
-    file_type: String,
+    title: String,
+    upload_type: number,
     path: String,
     dt: String, // TODO: Needs modification
-    class_name: String,
-    department_name: String, 
+    text: String
     professor_name: String
 }
 
@@ -115,7 +115,8 @@ export default function Posts(): JSX.Element {
         <StyledApp>
         <MainContent>
             <SortBar />
-            <PostsGrid posts={posts}/>
+            <PostsGrid posts={posts}
+            />
             {/* <section className="posts"></section> */}
         </MainContent>
     </StyledApp>

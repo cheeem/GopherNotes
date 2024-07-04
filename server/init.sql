@@ -34,6 +34,7 @@ CREATE TABLE professor_classes (
 
 DROP TABLE IF EXISTS posts; 
 
+-- Upload type: PDF: 1, IMG: 2, DOC: 3, TEXT: 4
 CREATE TABLE posts (
     id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
     deleted BIT NOT NULL DEFAULT 0, 
@@ -68,3 +69,13 @@ INSERT INTO professors(`name`) VALUES
     ("Maria Gini"),
     ("Paul Schrater"),
     ("James Moen");
+
+
+-- Insert initial values
+INSERT INTO posts (deleted, upload_type, path, text, class_id, professor_id, title, dt) VALUES
+(0x00, 1, '/files/machine_learning_fundamentals.pdf', '', 1, 1, 'Introduction to ML PDF', '2024-07-01 22:09:11'),
+(0x00, 4, '', 'This is the notes I have for the class', 1, 1, 'Introduction to ML Text', '2024-07-01 22:09:11'),
+(0x00, 2, '/images/nlp_class_image.jpg', '', 2, 2, 'NLP Class Overview', '2024-07-01 22:09:11'),
+(0x00, 3, '/docs/ai_notes.docx', '', 3, 3, 'AI Class Notes', '2024-07-01 22:09:11'),
+(0x00, 1, '/files/advanced_programming.pdf', '', 5, 5, 'Advanced Programming Tutorial', '2024-07-01 22:09:11'),
+(0x00, 1, '/files/machine_learning.pdf', '', 4, 4, 'Deep Learning Concepts', '2024-07-01 22:09:11');

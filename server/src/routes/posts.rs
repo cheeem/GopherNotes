@@ -13,14 +13,15 @@ use chrono::{DateTime, Utc};
 
 #[derive(Serialize, FromRow, Deserialize)]
 pub struct Post {
-    id: i32,
+    id: u8,
     title: String,
-    file_type: String,
+    upload_type: u8,
     path: String,
-    // #[serde(with = "ts_seconds_option")]
-    // dt: DateTime<Utc>,
+
     #[serde(with = "chrono::serde::ts_seconds")]
     dt: DateTime<Utc>,
+
+    text: String,
     professor_name: String, // TODO: add text field
 }
 
@@ -39,9 +40,10 @@ pub async fn get_posts_by_class_and_department(
     let sql = "SELECT 
     posts.id,
     posts.title,
-    posts.file_type,
+    posts.upload_type,
     posts.path,
     posts.dt,
+    posts.text,
     professors.name AS professor_name
     FROM posts
     JOIN classes ON posts.class_id = classes.id
