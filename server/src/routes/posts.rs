@@ -21,7 +21,7 @@ pub struct Post {
     #[serde(with = "chrono::serde::ts_seconds")]
     dt: DateTime<Utc>,
 
-    text: String,
+    text: Option<String>,
     professor_name: String, // TODO: add text field
 }
 

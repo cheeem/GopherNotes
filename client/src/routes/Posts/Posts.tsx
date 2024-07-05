@@ -30,7 +30,7 @@ export type Post = {
     upload_type: number,
     path: String,
     dt: String, // TODO: Needs modification
-    text: String
+    text: String | null,
     professor_name: String
 }
 
