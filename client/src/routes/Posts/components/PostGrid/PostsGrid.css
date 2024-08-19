@@ -11,3 +11,9 @@ div.PostsCard {
     background: #fff;
     width: 200px;
 }
+
+.posts-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
