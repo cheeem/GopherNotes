@@ -1,48 +1,75 @@
 .post-card {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 10px;
-    width: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer; 
+    border: var(--border1);
+    border-radius: 0.5em;
+    padding: var(--field-padding-y) var(--field-padding-x);
+    background-color: #fff;
+    width: 20vw;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: var(--field-padding-y);
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .post-header {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    font-size: 1.2em;
 }
 
-.post-title {
-    display: flex;
-    flex-direction: column;
+.post-header h3 {
+    margin: 0;
+    word-wrap: break-word;
+    max-width: 60%;
 }
 
-.post-rating {
+.rating {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
+    height: 100%; /* Ensures full height for correct positioning */
 }
 
-.arrows span {
-    display: block;
+.vote-button {
+    border: none;
+    cursor: pointer;
+    font-size: 1.5em;
+    color: #666;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vote-button:hover {
+    color: #000;
+    background-color: var(--light2);
+}
+
+.post-image {
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    border-radius: 0.5em;
 }
 
 .post-image img {
     width: 100%;
     height: auto;
-    border-radius: 5px;
+    display: block;
 }
 
 .post-footer {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     align-items: center;
+    font-size: 0.9em;
 }
 
-.post-icons span {
-    margin-left: 5px;
-    cursor: pointer;
+.post-footer .post-actions {
+    display: flex;
+    gap: 1em;
 }

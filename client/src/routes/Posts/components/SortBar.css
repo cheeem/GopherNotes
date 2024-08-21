@@ -1,0 +1,8 @@
+button.sort-button {
+    border-radius: 4px;
+}
+
+button.sort-button:hover {
+    color: var(--dark1);
+    background-color: var(--light2);
+}

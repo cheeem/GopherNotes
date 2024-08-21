@@ -9,8 +9,10 @@ import PostsGrid from "./components/PostGrid/PostsGrid";
 
 const StyledApp = styled.div`
 	//   background-color: #f0f0f0;
-	margin: 2% 10% 100px 10%;
+	// margin: 2% 10% 100px 10%;
 	padding: 0 0 100px 0;
+	padding: 0 var(--side-padding) 0 var(--side-padding);
+
 `;
 
 const MainContent = styled.div`
@@ -18,10 +20,6 @@ const MainContent = styled.div`
 	justify-content: flex-start;
 	background-color: white;
 	border-radius: 10px;
-
-	padding: 20px;
-	// box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	// overflow: hidden;  // Contain all child elements within this element
 `;
 
 export type Post = {
@@ -40,7 +38,7 @@ export const posts: Post[] = [
 		title: "Introduction to Java",
 		professor_name: "Prof asdf",
 		dt: "2024-9-1",
-		path: "/path/to/image1.jpg",
+		path: "/img/tempNotes.png",
 		upload_type: 1,
 		text: null,
 	},

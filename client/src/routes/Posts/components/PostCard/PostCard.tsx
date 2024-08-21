@@ -1,6 +1,7 @@
 // components/PostCard.tsx
 import React from "react";
-import { useNavigate} from 'react-router-dom';
+// import { useNavigate} from 'react-router-dom';
+import { Link } from "react-router-dom";
 import "./PostCard.css";
 import { Post } from "../../Posts";
 
@@ -9,36 +10,35 @@ type PostCardProps = {
 };
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
-    // const history = useHistory();
-    const navigate = useNavigate();
+	// const history = useHistory();
+	// const navigate = useNavigate();
 
-    const handleClick = () => {
-        navigate(`/post/${post.id}`);
-    }
+	// const handleClick = () => {
+	//     navigate(`/post/${post.id}`);
+	// }
 	return (
-		<div className="post-card" onClick={handleClick}>
-			<div className="post-header">
-				<div className="post-title">
-					<h3>{post.title}</h3>
-					<p>{post.text}</p>
-				</div>
-				<div className="post-rating">
-					<span>5</span>
-					<div className="arrows">
-						<span>&uarr;</span>
-						<span>&darr;</span>
-					</div>
-				</div>
-			</div>
+		<div className="post-card">
+      <div className="post-header">
+        <div className="post-title">
+          <h3>{post.title}</h3>
+          <p>{post.text}</p>
+        </div>
+        <div className="rating">
+          <button className="vote-button">&uarr;</button> {/* Upvote */}
+          {/* <span>{post.voteCount}</span> Vote count */}
+		  <span>5</span>
+          <button className="vote-button">&darr;</button> {/* Downvote */}
+        </div>
+      </div>
 			<div className="post-image">
-				<img src={post.path.toString()} alt={post.title.toString()} />
+				<Link to={`/post/${post.id}`}>
+					<img src={post.path.toString()} alt={post.title.toString()} />
+				</Link>
 			</div>
 			<div className="post-footer">
 				<p>{post.text}</p>
-				<div className="post-icons">
-					<span>&#x1F4AC;</span>
-					<span>&#x1F4DD;</span>
-				</div>
+				<p>Additional information Here</p>
+
 			</div>
 		</div>
 	);

@@ -1,0 +1,1 @@
+fn(State<Arc<AppState>>, axum::extract::Query<PostSearch>) -> impl Future<Output = Result<axum::Json<Vec<Post>>, axum::http::StatusCode>> {get_posts_by_class_and_department}
