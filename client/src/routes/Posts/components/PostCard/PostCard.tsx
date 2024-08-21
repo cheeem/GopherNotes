@@ -31,7 +31,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         </div>
       </div>
 			<div className="post-image">
-				<Link to={`/post/${post.id}`}>
+				<Link to={`/post/${post.id}`} state={{ post }}>
 					<img src={post.path.toString()} alt={post.title.toString()} />
 				</Link>
 			</div>

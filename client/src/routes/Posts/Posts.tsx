@@ -32,62 +32,62 @@ export type Post = {
 	professor_name: String;
 };
 
-export const posts: Post[] = [
-	{
-		id: 1,
-		title: "Introduction to Java",
-		professor_name: "Prof asdf",
-		dt: "2024-9-1",
-		path: "/img/tempNotes.png",
-		upload_type: 1,
-		text: null,
-	},
-	{
-		id: 1,
-		title: "Introduction to Java",
-		professor_name: "Prof asdf",
-		dt: "2024-9-1",
-		path: "/path/to/image1.jpg",
-		upload_type: 1,
-		text: null,
-	},
-    {
-		id: 1,
-		title: "Introduction to Java",
-		professor_name: "Prof asdf",
-		dt: "2024-9-1",
-		path: "/path/to/image1.jpg",
-		upload_type: 1,
-		text: null,
-	},
-    {
-		id: 1,
-		title: "Introduction to Java",
-		professor_name: "Prof asdf",
-		dt: "2024-9-1",
-		path: "/path/to/image1.jpg",
-		upload_type: 1,
-		text: null,
-	},
-    {
-		id: 1,
-		title: "Introduction to Java",
-		professor_name: "Prof asdf",
-		dt: "2024-9-1",
-		path: "/path/to/image1.jpg",
-		upload_type: 1,
-		text: null,
-	},
-	{
-		id: 1,
-		title: "Introduction to Java",
-		professor_name: "Prof asdf",
-		dt: "2024-9-1",
-		path: "/path/to/image1.jpg",
-		upload_type: 1,
-		text: null,
-	},
-];
+// export const posts: Post[] = [
+// 	{
+// 		id: 1,
+// 		title: "Introduction to Java",
+// 		professor_name: "Prof asdf",
+// 		dt: "2024-9-1",
+// 		path: "/img/tempNotes.png",
+// 		upload_type: 1,
+// 		text: null,
+// 	},
+// 	{
+// 		id: 1,
+// 		title: "Introduction to Java",
+// 		professor_name: "Prof asdf",
+// 		dt: "2024-9-1",
+// 		path: "/path/to/image1.jpg",
+// 		upload_type: 1,
+// 		text: null,
+// 	},
+//     {
+// 		id: 1,
+// 		title: "Introduction to Java",
+// 		professor_name: "Prof asdf",
+// 		dt: "2024-9-1",
+// 		path: "/path/to/image1.jpg",
+// 		upload_type: 1,
+// 		text: null,
+// 	},
+//     {
+// 		id: 1,
+// 		title: "Introduction to Java",
+// 		professor_name: "Prof asdf",
+// 		dt: "2024-9-1",
+// 		path: "/path/to/image1.jpg",
+// 		upload_type: 1,
+// 		text: null,
+// 	},
+//     {
+// 		id: 1,
+// 		title: "Introduction to Java",
+// 		professor_name: "Prof asdf",
+// 		dt: "2024-9-1",
+// 		path: "/path/to/image1.jpg",
+// 		upload_type: 1,
+// 		text: null,
+// 	},
+// 	{
+// 		id: 1,
+// 		title: "Introduction to Java",
+// 		professor_name: "Prof asdf",
+// 		dt: "2024-9-1",
+// 		path: "/path/to/image1.jpg",
+// 		upload_type: 1,
+// 		text: null,
+// 	},
+// ];
 
 type SearchOption = {
 	display: string;
@@ -147,13 +147,13 @@ export default function Posts(): JSX.Element {
 	const class_code: string = params.class_code!;
 
     // TODO: Uncomment these
-	// const [posts, setPosts] = useState<Post[] | null>(null);
-	// const [searchOptionActive, setSearchOptionActive] = useState(0);
-	// const [sortOptionActive, setSortOptionActive] = useState(0);
+	const [posts, setPosts] = useState<Post[] | null>(null);
+	const [searchOptionActive, setSearchOptionActive] = useState(0);
+	const [sortOptionActive, setSortOptionActive] = useState(0);
 
-	// useEffect(() => {
-	//     getPosts(department_code, class_code, searchOptionActive, setPosts);
-	// }, [sortOptionActive])
+	useEffect(() => {
+	    getPosts(department_code, class_code, searchOptionActive, setPosts);
+	}, [sortOptionActive])
 
 	return (
 		<>

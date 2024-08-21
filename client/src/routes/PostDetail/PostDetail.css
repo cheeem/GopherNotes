@@ -1,0 +1,60 @@
+.post-detail-container {
+    padding: var(--side-padding);
+    margin: auto;
+    max-width: 1200px;
+    background-color: var(--light2);
+    border-radius: 0.5em;
+    box-shadow: 0 0.5em 1.5em rgba(0, 0, 0, 0.1);
+}
+
+.post-detail-container h1 {
+    color: var(--dark1);
+    font-size: 2.5em;
+    font-weight: 800;
+    margin-bottom: 0.5em;
+}
+
+.post-detail-container p {
+    color: var(--dark2);
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 1em;
+}
+
+.post-detail-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.25em;
+    margin: 1.5em 0;
+    object-fit: cover;
+    box-shadow: 0 0.5em 1.5em rgba(0, 0, 0, 0.1);
+}
+
+.post-detail-container .professor-name, .post-detail-container .post-date {
+    font-weight: 600;
+    color: var(--dark2);
+    margin-bottom: 0.5em;
+}
+
+.post-detail-container .professor-name {
+    font-size: 1.2em;
+}
+
+.post-detail-container .post-date {
+    font-size: 1em;
+    color: var(--dark1);
+}
+
+@media (max-width: 768px) {
+    .post-detail-container {
+        padding: 5vw;
+    }
+
+    .post-detail-container h1 {
+        font-size: 2em;
+    }
+
+    .post-detail-container p {
+        font-size: 1em;
+    }
+}
