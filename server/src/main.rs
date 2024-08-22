@@ -1,5 +1,6 @@
 // external libraries
 use dotenv::dotenv;
+use lazy_static::lazy_static;
 use tokio;
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
@@ -21,8 +22,11 @@ mod routes;
 
 pub struct AppState {
     db: Pool<MySql>,
-    img_path: String, 
     img_count: Mutex<u32>,
+}
+
+lazy_static! {
+    static ref IMG_PATH: String = env::var("IMG_PATH").expect("img path env");
 }
 
 #[tokio::main]
@@ -35,9 +39,7 @@ async fn main() {
     let server_addr: &str = &env::var("SERVER_ADDR").expect("server addr env");
     let client_addr: &str = &env::var("CLIENT_ADDR").expect("client addr env");
     
-    let img_path: String = env::var("IMG_PATH").expect("img path env");
-
-    let img_count: Mutex<u32> = Mutex::new(get_img_count(&img_path));
+    let img_count: Mutex<u32> = Mutex::new(get_img_count());
 
     let cors: CorsLayer = CorsLayer::new()
         .allow_origin(client_addr.parse::<HeaderValue>().expect("client addr parse"))
@@ -52,11 +54,11 @@ async fn main() {
 
     let state: Arc<AppState> = Arc::new(AppState {
         db,
-        img_path,
         img_count,
     });
 
     let app: Router = Router::new() 
+        .route("/class/get_posts", post(routes::class::get_posts))
         .route("/home/get_classes_by_code", get(routes::home::get_classes_by_code))
         .route("/home/get_classes_by_professor", get(routes::home::get_classes_by_professor))
         .route("/upload/upload", post(routes::upload::upload))
@@ -75,9 +77,9 @@ async fn main() {
 
 }
 
-fn get_img_count(img_path: &str) -> u32 {
+fn get_img_count() -> u32 {
 
-    let dir: fs::ReadDir = fs::read_dir(img_path).expect("read img dir");
+    let dir: fs::ReadDir = fs::read_dir(&*IMG_PATH).expect("read img dir");
 
     let mut img_count: u32 = 0;
 

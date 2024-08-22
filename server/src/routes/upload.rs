@@ -1,7 +1,6 @@
 use axum::extract::State;
 use axum::extract::multipart;
 use axum::body::Bytes;
-use axum::response;
 use axum::http::StatusCode;
 use sqlx::Pool;
 use sqlx::mysql::MySql;
@@ -9,7 +8,7 @@ use serde::Serialize;
 use std::sync::{ Arc, Mutex, MutexGuard, };
 use std::fs;
 use std::io::Write;
-use crate::AppState;
+use crate::{ AppState, IMG_PATH };
 
 #[derive(Serialize)]
 struct UploadError {
@@ -39,11 +38,12 @@ enum Download {
     Text(DownloadText),
 }
 
+#[derive(Debug)]
 struct DownloadFile {
     title: String,
     class_id: u32,
     professor_id: Option<u32>,
-    path: String,
+    file_name: String,
 }
 
 struct DownloadText {
@@ -164,7 +164,6 @@ impl Upload {
         let upload: Download = match self.upload_type.unwrap() {
 
             UploadType::File => Download::File(DownloadFile::new(
-                &state.img_path,
                 &state.img_count,
                 self.title.ok_or(StatusCode::UNPROCESSABLE_ENTITY)?, 
                 &self.file_ext.ok_or(StatusCode::UNPROCESSABLE_ENTITY)?,
@@ -188,30 +187,30 @@ impl Upload {
 
 impl DownloadFile {
 
-    fn new(img_path: &str, img_count: &Mutex<u32>, title: String, file_ext: &str, bytes: &Bytes, class_id: u32, professor_id: Option<u32>) -> Result<Self, StatusCode> {
+    fn new(img_count: &Mutex<u32>, title: String, file_ext: &str, bytes: &Bytes, class_id: u32, professor_id: Option<u32>) -> Result<Self, StatusCode> {
 
-        let path: String = Self::download(img_path, img_count, file_ext, bytes)?;
+        let file_name: String = Self::download(img_count, file_ext, bytes)?;
 
         Ok(Self {
             title,
-            path,
+            file_name,
             class_id,
             professor_id,
         })
         
     }
 
-    fn download(img_path: &str, img_count: &Mutex<u32>, file_ext: &str, bytes: &Bytes) -> Result<String, StatusCode> {
+    fn download(img_count: &Mutex<u32>, file_ext: &str, bytes: &Bytes) -> Result<String, StatusCode> {
 
-        let path: String = format!("{img_path}{}", Self::name_file(img_count, file_ext));
+        let file_name: String = Self::name_file(img_count, file_ext);
 
-        let mut file: fs::File = fs::File::create(&path).map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?;
+        let mut file: fs::File = fs::File::create(&format!("{}{file_name}", &*IMG_PATH)).map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?;
 
         //let (mut file, path): (fs::File, String) = Self::new_file(img_count, path, file_ext)?;
 
         file.write(&bytes).map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?;
 
-        Ok(path)
+        Ok(file_name)
 
     }
 
@@ -263,11 +262,11 @@ impl DownloadFile {
 
     async fn log(&self, db: &Pool<MySql>) -> bool {
 
-        let sql: &str = "INSERT INTO posts (upload_type, title, path, class_id, professor_id, dt) VALUES (0, ?, ?, ?, ?, NOW())";
+        let sql: &str = "INSERT INTO posts (upload_type, title, file_name, class_id, professor_id, dt) VALUES (0, ?, ?, ?, ?, NOW())";
 
         sqlx::query(sql)
             .bind(&self.title)
-            .bind(&self.path)
+            .bind(&self.file_name)
             .bind(&self.class_id)
             .bind(&self.professor_id)
             .execute(db)
@@ -276,9 +275,13 @@ impl DownloadFile {
 
     }
 
-    fn remove_file(&self) -> Result<(), Self> {
+    fn remove_file(self) -> Result<(), Self> {
 
-        todo!();
+        if fs::remove_file(&format!("{}{}", &*IMG_PATH, self.file_name)).is_err() {
+            return Err(self);
+        }
+
+        Ok(())
 
     }
 
@@ -321,17 +324,17 @@ pub async fn upload(State(state): State<Arc<AppState>>, multipart: multipart::Mu
         .download(&state)
         .await?;
 
-    let no_error: bool = match &download {
+    let file_logged: bool = match &download {
         Download::File(download_file) => download_file.log(&state.db).await,
         Download::Text(download_text) => download_text.log(&state.db).await,
     };
 
-    if no_error {
+    if file_logged {
         return Ok(())
     }
         
     if let Download::File(download_file) = download {
-        let _ = download_file.remove_file(); // handle error case later
+        download_file.remove_file().expect("failed to delete unlogged file"); // handle error case later
     }
 
     return Err(StatusCode::UNPROCESSABLE_ENTITY)?;
