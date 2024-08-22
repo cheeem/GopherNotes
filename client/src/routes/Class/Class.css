@@ -1,0 +1,204 @@
+#class .hero {
+    position: relative;
+
+    display: grid;
+    gap: 7.5vh;
+
+    padding: 7.5vh var(--side-padding) 7.5vh var(--side-padding);
+
+    background: linear-gradient(to bottom right, var(--highlight1), var(--highlight2));
+}
+
+#class header {
+    display: grid;
+    gap: 1em;
+}
+
+#class header h1 {
+    font-size: 5em;
+    font-weight: 800;
+    color: var(--light1);
+
+    translate: -0.05em;
+}
+
+#class header h3 {
+    color: var(--light1);
+}
+
+#class .search-options {
+    overflow: hidden;
+
+    display: flex;
+    gap: 0.2em;
+
+    width: fit-content;
+
+    margin-bottom: 0.2em;
+
+    border-radius: 1em 1em 0 0;
+}
+
+#class .search-options h5 {
+    padding: 0.25em var(--field-padding-x);
+
+    font-weight: 600;
+    color: var(--light1);
+
+    border: 0.2em solid var(--light1);
+    border-radius: 1em 0 0 0;
+}
+
+#class .search-options button {
+    padding: 0.25em var(--field-padding-x);
+
+    background-color: var(--light1);
+
+    font-weight: 600;
+}
+
+#class .search-options .active {
+    background-color: var(--dark1);
+
+    color: var(--light1);
+}
+
+#class .search-input {
+    position: relative;
+}
+
+#class .search-input img {
+    position: absolute; 
+    top: 50%;
+    left: var(--field-padding-x);
+
+    width: 1.5em;
+    height: 1.5em;
+
+    translate: 0 -50%;
+}
+
+#class .search-input input {
+    width: 100%;
+
+    padding: var(--field-padding-y) var(--field-padding-x) var(--field-padding-y) calc(2 * var(--field-padding-x));
+
+    background-color: var(--light1);
+
+    font-weight: 600;
+
+    border: none;
+    /* border-bottom: */
+    border-radius: 0 1em 1em 1em;
+}
+
+#class .posts {
+    padding: 2.5em var(--side-padding);
+
+    background-color: var(--light2);
+}
+
+#class .posts ul {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5em;
+}
+
+#class .post {
+    display: grid;
+    gap: 1em;
+
+    background-color: var(--light1);
+
+    padding: 2.5em;
+
+    border-radius: 1em;
+}
+
+#class .post-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+}
+
+#class .post-header a {
+    display: block;
+}
+
+#class .post-header a:hover {
+    text-decoration: underline;
+}
+
+#class .post-vote {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.2em;
+}
+
+#class .post-vote h5 {
+    font-size: 1.9em;
+    font-weight: 800;
+
+    margin-right: 0.5em;
+}
+
+#class .post-vote button {
+    padding: 0.5em 0.75em;
+
+    background-color: var(--dark1);
+
+    font-weight: 800;
+    color: var(--light1);
+}
+
+#class .title {
+    font-weight: 800;
+    font-size: 1.5em;
+}
+
+#class .username {
+    font-size: 0.8em;
+}
+
+#class .post .image {
+    overflow: hidden;
+
+    width: 100%;
+
+    aspect-ratio: 1;
+}
+
+#class .post .image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    /* border-radius: 1em; */
+
+    scale: 1.01;
+
+    transition: scale 0.2s ease, opacity 0.2s ease;
+}
+
+#class .post .image:hover img {
+    scale: 1.03;
+    
+    opacity: 0.95;
+}
+
+#class .post-footer {
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
+}
+
+#class .post-footer p:first-of-type {
+    font-weight: 500;
+}
+
+#class .post-footer p {
+    font-size: 0.8em;
+}
+
