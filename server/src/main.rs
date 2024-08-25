@@ -58,7 +58,8 @@ async fn main() {
     });
 
     let app: Router = Router::new() 
-        .route("/class/get_posts", post(routes::class::get_posts))
+        .route("/class/:department_code/:class_code/get_posts_by_title", post(routes::class::get_posts_by_title))
+        .route("/class/:department_code/:class_code/get_posts_by_professor", post(routes::class::get_posts_by_professor))
         .route("/home/get_classes_by_code", get(routes::home::get_classes_by_code))
         .route("/home/get_classes_by_professor", get(routes::home::get_classes_by_professor))
         .route("/upload/upload", post(routes::upload::upload))
