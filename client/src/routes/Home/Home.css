@@ -73,13 +73,21 @@
 
     font-weight: 600;
 
-    /* transition: background-color 0.2s ease, color 0.2s ease; */
+    /* transition: background-color 0.2s ease; */
+}
+
+#home .search-options button:hover {
+    background-color: var(--light2);
 }
 
 #home .search-options .active {
     background-color: var(--dark1);
 
     color: var(--light1);
+}
+
+#home .search-options .active:hover {
+    background-color: var(--dark1);
 }
 
 #home .search-input {
@@ -122,11 +130,11 @@
     color: var(--light1);
 }
 
-#home .post {
+#home .post-yours {
     flex: 1;
 }
 
-#home .post p {
+#home .post-yours p {
     width: 100%;
 
     padding: var(--field-padding-y) var(--field-padding-x);
@@ -142,7 +150,7 @@
     transition: background-color 0.2s ease;
 }
 
-#home .post:hover p {
+#home .post-yours:hover p {
     background-color: var(--dark2);
 }
 
@@ -208,6 +216,10 @@
 #home li .desc {
     display: grid;
     gap: 0.5em;
+}
+
+#home .courses li .link {
+    margin-top: auto;
 }
 
 #home .courses li .link p {

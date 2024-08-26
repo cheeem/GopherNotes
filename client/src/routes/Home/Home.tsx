@@ -1,5 +1,6 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import { Link } from "react-router-dom";
+import { base_api_url } from "../../constants";
 import "./Home.css";
 import svg_search from "../../img/Search.svg";
 
@@ -48,12 +49,12 @@ type SearchOption = {
 //     },
 // ] as const;
 
-const searchOptions: ReadonlyArray<SearchOption> = [
+const search_options: ReadonlyArray<SearchOption> = [
     { display: "Class Code", query: "code" },
     { display: "Professor", query: "professor" },
 ] as const;
 
-const sortOptions: ReadonlyArray<string> = [
+const sort_options: ReadonlyArray<string> = [
     "Recently Visited",
     "Popular",
 ] as const;
@@ -61,12 +62,12 @@ const sortOptions: ReadonlyArray<string> = [
 export default function Home(): JSX.Element {
 
     const [classes, setClasses] = useState<UMNClass[] | null>(null);
-    const [searchOptionActive, setSearchOptionActive] = useState(0);
-    const [sortOptionActive, setSortOptionActive] = useState(0);
+    const [search_option_active, setSearchOptionActive] = useState(0);
+    const [sort_option_active, setSortOptionActive] = useState(0);
 
     useEffect(() => {
-        searchClasses(null, searchOptionActive, setClasses);
-    }, [searchOptionActive]);
+        searchClasses(null, search_option_active, setClasses);
+    }, [search_option_active]);
     
     return (
         <article id="home">
@@ -77,22 +78,22 @@ export default function Home(): JSX.Element {
                 </header>
                 <div className="body">
                     <div className="search">
-                        <SearchOptions active={searchOptionActive} setActive={setSearchOptionActive} />
+                        <SearchOptions active={search_option_active} setActive={setSearchOptionActive} />
                         <div className="search-input">
                             <img src={svg_search} alt="" />
-                            <input type="text" name="input" onChange={(e: ChangeEvent<HTMLInputElement>) => searchClasses(e.target.value || null, searchOptionActive, setClasses)} />
+                            <input type="text" name="input" onChange={(e: ChangeEvent<HTMLInputElement>) => searchClasses(e.target.value || null, search_option_active, setClasses)} />
                         </div>
                     </div>
                     <div className="or">
                         <p>or</p>
                     </div>
-                    <div className="post">
-                        <Link to="/post"><p>Post Your Own Notes</p></Link>
+                    <div className="post-yours">
+                        <Link to="/upload"><p>Post Your Own Notes</p></Link>
                     </div>
                 </div>
             </section>
             <section className="courses">
-                <SortOptions active={sortOptionActive} setActive={setSortOptionActive} />
+                <SortOptions active={sort_option_active} setActive={setSortOptionActive} />
                 <ClassList classes={classes} />
             </section>
         </article>
@@ -101,12 +102,12 @@ export default function Home(): JSX.Element {
 
 function SearchOptions(props: { active: number, setActive: React.Dispatch<React.SetStateAction<number>> }): JSX.Element {
 
-    const options: JSX.Element[] = searchOptions.map((searchOption: SearchOption, index: number) => (
+    const options: JSX.Element[] = search_options.map((search_option: SearchOption, index: number) => (
         <button 
             key={index}
             className={optionActiveClass(props.active, index)} 
             onClick={() => props.setActive(index)}
-        > {searchOption.display}
+        > {search_option.display}
         </button>
     ));
 
@@ -121,7 +122,7 @@ function SearchOptions(props: { active: number, setActive: React.Dispatch<React.
 
 function SortOptions(props: { active: number, setActive: React.Dispatch<React.SetStateAction<number>> }): JSX.Element {
 
-    const options: JSX.Element[] = sortOptions.map((display: string, index: number) => (
+    const options: JSX.Element[] = sort_options.map((display: string, index: number) => (
         <button 
             key={index}
             className={optionActiveClass(props.active, index)} 
@@ -166,9 +167,9 @@ function Class(umn_class: UMNClass, index: number): JSX.Element {
     )
 }
 
-function optionActiveClass(active: number, searchOption: number): string {
+function optionActiveClass(active: number, search_option: number): string {
     
-    if(active === searchOption) {
+    if(active === search_option) {
         return "active"
     }
     
@@ -176,28 +177,32 @@ function optionActiveClass(active: number, searchOption: number): string {
 
 }
 
-async function searchClasses(input: string | null, searchOptionActive: number, setClasses: React.Dispatch<React.SetStateAction<UMNClass[] | null>>) {
+async function searchClasses(input: string | null, search_option_active: number, setClasses: React.Dispatch<React.SetStateAction<UMNClass[] | null>>) {
 
-    const searchBy: string = searchOptions[searchOptionActive].query;
+    const search_by: string = search_options[search_option_active].query;
 
-    let url: string = `http://localhost:3000/home/get_classes_by_${searchBy}`
+    let url: string = `${base_api_url}/home/get_classes_by_${search_by}`;
     
     if(input) {
-        url += `?input=${input}`
+        url += `?input=${input}`;
     }
 
-    try {
-        
-        const res: Response = await fetch(url);
-        
-        if(res.ok === false) {
-            return 
-        }
-        
-        const classes: UMNClass[] = await res.json();
-        
-        setClasses(classes);
+    let res: Response;
 
-    } catch(_) {}
+    try {   
+        res = await fetch(url);
+    } catch(err) {
+        return console.log(err);
+    }
+        
+    if(res!.ok === false) {
+        return console.log(res.status);
+    }
+        
+    try {
+        setClasses(await res!.json());
+    } catch(err) {
+        console.log(err);
+    }
 
 }

@@ -1,0 +1,101 @@
+#post {
+    padding: 2.5em var(--side-padding);
+
+    max-height: calc(100vh - var(--nav-height));
+    max-height: calc(100svh - var(--nav-height));
+}
+
+#post .content {
+    display: grid;
+    gap: 1.5em;
+
+    height: 100%;
+}
+
+#post header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+}
+
+#post header a {
+    display: block;
+
+    margin-top: 0.5em;
+}
+
+#post header a:hover {
+    text-decoration: underline;
+}
+
+#post .post-vote {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.2em;
+}
+
+#post .post-vote h5 {
+    font-size: 2.5em;
+    font-weight: 800;
+
+    margin-right: 0.5em;
+}
+
+#post .post-vote button {
+    padding: 0.75em 1.25em;
+
+    background-color: var(--dark1);
+
+    font-weight: 800;
+    color: var(--light1);
+}
+
+#post .title {
+    font-weight: 800;
+    font-size: 1.5em;
+}
+
+#post .username {
+    font-size: 1em;
+}
+
+#post .content .image {
+    padding: 1em;
+
+    background-color: var(--dark1);
+
+    width: 100%;
+    height: 30em;
+}
+
+#post .content .image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    /* border-radius: 1em; */
+}
+
+#post .post-footer {
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
+}
+
+#post .post-footer > p {
+    font-weight: 600;
+}
+
+#post .post-footer .class {
+    font-weight: 600;
+}
+
+#post .post-footer .class:hover {
+    text-decoration: underline;
+}
+
+#post .post-footer p {
+    font-size: 1em;
+}

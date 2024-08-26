@@ -6,7 +6,7 @@
 
     padding: 7.5vh var(--side-padding) 7.5vh var(--side-padding);
 
-    background: linear-gradient(to bottom right, var(--highlight1), var(--highlight2));
+    background: linear-gradient(to bottom right, indigo, var(--highlight1));
 }
 
 #class header {
@@ -24,6 +24,17 @@
 
 #class header h3 {
     color: var(--light1);
+}
+
+#class .hero .body {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2.5em;
+}
+
+#class .search {
+    flex: 2;
 }
 
 #class .search-options {
@@ -55,12 +66,22 @@
     background-color: var(--light1);
 
     font-weight: 600;
+
+    /* transition: background-color 0.2s ease; */
+}
+
+#class .search-options button:hover {
+    background-color: var(--light2);
 }
 
 #class .search-options .active {
     background-color: var(--dark1);
 
     color: var(--light1);
+}
+
+#class .search-options .active:hover {
+    background-color: var(--dark1);
 }
 
 #class .search-input {
@@ -92,8 +113,43 @@
     border-radius: 0 1em 1em 1em;
 }
 
+#class .or {
+    padding: var(--field-padding-y) 0;
+}
+
+#class .or p {
+    font-style: italic;
+    font-weight: 800;
+    font-size: 1.5em;
+    color: var(--light1);
+}
+
+#class .post-yours {
+    flex: 1;
+}
+
+#class .post-yours p {
+    width: 100%;
+
+    padding: var(--field-padding-y) var(--field-padding-x);
+
+    background-color: var(--dark1);
+
+    text-align: center;
+    font-weight: 800;
+    color: var(--light1);
+
+    border-radius: 1em;
+
+    transition: background-color 0.2s ease;
+}
+
+#class .post-yours:hover p {
+    background-color: var(--dark2);
+}
+
 #class .posts {
-    padding: 2.5em var(--side-padding);
+    padding: 5em var(--side-padding);
 
     background-color: var(--light2);
 }
@@ -101,7 +157,7 @@
 #class .posts ul {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2.5em;
+    gap: 1.5em;
 }
 
 #class .post {
@@ -110,7 +166,7 @@
 
     background-color: var(--light1);
 
-    padding: 2.5em;
+    padding: var(--field-padding-x) var(--field-padding-x);
 
     border-radius: 1em;
 }
@@ -183,7 +239,7 @@
 
 #class .post .image:hover img {
     scale: 1.03;
-    
+
     opacity: 0.95;
 }
 
@@ -195,7 +251,7 @@
 }
 
 #class .post-footer p:first-of-type {
-    font-weight: 500;
+    font-weight: 600;
 }
 
 #class .post-footer p {
