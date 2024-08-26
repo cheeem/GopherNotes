@@ -62,6 +62,7 @@ async fn main() {
         .route("/class/:department_code/:class_code/get_posts_by_professor", post(routes::class::get_posts_by_professor))
         .route("/home/get_classes_by_code", get(routes::home::get_classes_by_code))
         .route("/home/get_classes_by_professor", get(routes::home::get_classes_by_professor))
+        .route("/post/get_post", get(routes::post::get_post))
         .route("/upload/upload", post(routes::upload::upload))
         .layer(cors)
         .with_state(state.clone());

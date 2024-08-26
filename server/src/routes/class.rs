@@ -12,7 +12,7 @@ use crate::AppState;
 
 #[derive(Serialize, FromRow, Deserialize)]
 pub struct Post {
-    id: u8,
+    id: u32,
     title: String,
     upload_type: u8,
     path: String,
