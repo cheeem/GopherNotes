@@ -1,0 +1,140 @@
+/* uploadForm.css */
+
+/* Container to center the form */
+.container {
+	min-height: calc(100vh - var(--nav-height));
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--light2);
+	padding: 2em;
+}
+
+/* The form itself */
+.form {
+	background-color: var(--light1);
+	border: 1px solid var(--light2);
+	border-radius: 0.5em;
+	padding: 2em 3em;
+	width: 100%;
+	max-width: 600px; /* Adjust as needed */
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Title styling */
+.title {
+	font-size: 2em;
+	margin-bottom: 0.75em;
+	text-align: center;
+	color: var(--dark1);
+}
+
+/* Unordered list for form fields */
+.form ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+/* Spacing between each row */
+.form ul li {
+	margin-bottom: 1.5em;
+}
+
+/* Label Container */
+.floating-label {
+	position: relative;
+}
+
+/* Input fields */
+.input {
+	width: 100%;
+	padding: 0.8em;
+	border: 1px solid var(--dark2);
+	border-radius: 0.25em;
+	background-color: var(--light1);
+	font-size: 1em;
+	color: var(--dark1);
+	caret-color: var(--dark1);
+}
+
+/* The label in floating label context */
+.floating-label label {
+	position: absolute;
+	top: 50%;
+	left: 0.75em;
+	transform: translateY(-50%);
+	color: var(--dark2);
+	background-color: var(--light1);
+	pointer-events: none; /* So clicks go through to input */
+	transition: 0.2s ease all;
+	padding: 0 0.25em;
+}
+
+.input:focus + label,
+.input:not(:placeholder-shown) + label {
+	top: -0.6em; /* Move label above */
+	left: 0.6em; /* Adjust left spacing if you want */
+	font-size: 0.8em; /* Make it smaller */
+	color: var(--highlight1);
+}
+
+/* The select dropdown */
+.styledSelect {
+	display: block;
+	width: 100%;
+	margin: 1em 0;
+	padding: 0.8em;
+	border: 1px solid var(--dark2);
+	border-radius: 0.25em;
+	background-color: var(--light1);
+	font-size: 1em;
+	color: var(--dark1);
+	cursor: pointer;
+}
+
+/* Textarea styling */
+.textArea {
+	width: 100%;
+	min-height: 6em;
+	padding: 0.8em;
+	border: 1px solid var(--dark2);
+	border-radius: 0.25em;
+	background-color: var(--light1);
+	font-size: 1em;
+	color: var(--dark1);
+}
+
+/* Dropzone area */
+.dropzone {
+	border: 2px dashed var(--highlight1);
+	border-radius: 0.5em;
+	padding: 2em;
+	text-align: center;
+	cursor: pointer;
+	color: var(--dark1);
+	transition: background-color 0.3s;
+}
+
+.dropzone:hover,
+.dropzoneActive {
+	background-color: var(--highlight3);
+}
+
+/* Upload button */
+.button {
+	display: inline-block;
+	padding: 0.8em 2em;
+	background-color: var(--highlight1);
+	color: var(--light1);
+	border: none;
+	border-radius: 0.25em;
+	font-size: 1em;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.button:hover {
+	background-color: var(--highlight2);
+}
