@@ -7,9 +7,6 @@ export default function Upload() {
 
     const [upload_type_is_file, setUploadTypeIsFile] = useState(true);
 
-    const [file_name, setFileName] = useState<null | string>(null);
-    const file_input = useRef<HTMLInputElement>(null);
-
     return (
         <article id="upload">
             <form action={`${base_api_url}/upload/upload`} onSubmit={upload}>
@@ -31,14 +28,11 @@ export default function Upload() {
                     </li>
                     <li className="upload-field">
                         <div className="upload-type">
-                            <button className={upload_type_is_file ? "active" : ""} onClick={() => setUploadTypeIsFile(true)}>File</button>
-                            <button className={upload_type_is_file ? "" : "active"} onClick={() => setUploadTypeIsFile(false)}>Text</button>
+                            <button type="button" className={upload_type_is_file ? "active" : ""} onClick={() => setUploadTypeIsFile(true)}>File</button>
+                            <button type="button" className={upload_type_is_file ? "" : "active"} onClick={() => setUploadTypeIsFile(false)}>Text</button>
                         </div>
                         {upload_type_is_file ? 
-                            <button className="file-upload" type="button" onClick={() => file_input.current!.click()}>
-                                <input ref={file_input} type="file" name="files" accept=".jpg,.jpeg,.png,.pdf" required onChange={() => setFileName(file_input.current?.files?.[0].name ?? null)} />
-                                {file_name ? <p>{file_name}</p> : <><img src={svg_upload} alt="" /><p>Upload File</p></>}
-                            </button> : 
+                            <FileUpload /> : 
                             <textarea name="text"></textarea>
                         }
                     </li>
@@ -48,6 +42,28 @@ export default function Upload() {
                 </div>
             </form>
         </article>
+    )
+
+}
+
+function FileUpload() {
+
+    const [file_name, setFileName] = useState<null | string>(null);
+    const file_input = useRef<HTMLInputElement>(null);
+
+    return (
+        <button type="button" className="file-upload" onClick={() => file_input.current!.click()}>
+            <input ref={file_input} type="file" name="files" accept=".jpg,.jpeg,.png,.pdf" required 
+                onChange={() => setFileName(file_input.current?.files?.[0].name ?? null)} 
+            />
+            {file_name ? 
+                <p>{file_name}</p> : 
+                <>
+                    <img src={svg_upload} alt="" />
+                    <p>Upload File</p>
+                </>
+            }
+        </button>
     )
 
 }

@@ -16,7 +16,7 @@
 }
 
 #upload h1 span {
-    color: var(--highlight1);
+    color: var(--highlight2);
 }
 
 #upload ul {
@@ -80,7 +80,7 @@
 }
 
 #upload .upload-type .active {
-    background-color: var(--highlight1);
+    background-color: var(--highlight2);
 }
 
 #upload .upload-field input {
@@ -125,5 +125,5 @@
 }
 
 #upload form:valid .form-footer button:hover {
-    background-color: var(--highlight1);
+    background-color: var(--highlight2);
 }
