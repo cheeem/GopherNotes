@@ -1,0 +1,76 @@
+/* pages/ProfilePage.css */
+.profile-page-container {
+	display: flex;
+	flex-direction: row;
+	background-color: var(--light2);
+	min-height: calc(100vh - var(--nav-height)); /* if you have a fixed nav */
+	padding: 2em var(--side-padding);
+	box-sizing: border-box;
+}
+
+/* Left Sidebar/Column */
+.profile-sidebar {
+	flex: 0 0 250px;
+	background-color: var(--light1);
+	display: flex;
+	flex-direction: column;
+	border-right: var(--border1);
+	padding: 1em;
+}
+
+.profile-header {
+	margin-bottom: 2em;
+}
+
+/* Profile Header */
+.user-info {
+	margin-top: 1em;
+	color: var(--dark1);
+}
+.user-info h2 {
+	margin-bottom: 0.5em;
+	color: var(--dark2);
+}
+.user-bio {
+	margin-top: 1em;
+	font-style: italic;
+	color: var(--dark1);
+}
+
+/* Sidebar Navigation Tabs */
+nav.profile-nav {
+	position: static;
+	display: flex;
+	flex-direction: column;
+	float: none;
+	padding: 0;
+}
+
+.profile-nav-button {
+	background: none;
+	border: none;
+	text-align: left;
+	padding: 0.75em 1em;
+	font-size: 1rem;
+	font-weight: 600;
+	color: var(--dark1);
+	cursor: pointer;
+	border-radius: 0.25em;
+	margin-bottom: 0.5em;
+	transition: background-color 0.2s;
+}
+
+.profile-nav-button:hover {
+	background-color: var(--light2);
+}
+
+.profile-nav-button.active {
+	background-color: var(--highlight1);
+	color: var(--light1);
+}
+
+.profile-main {
+	flex: 1;
+	padding: 2em;
+	background-color: var(--light2);
+}

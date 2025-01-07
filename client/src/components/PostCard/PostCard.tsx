@@ -3,9 +3,9 @@ import React from "react";
 // import { useNavigate} from 'react-router-dom';
 import { Link } from "react-router-dom";
 import "./PostCard.css";
-import { Post } from "../../Posts";
+import { Post } from "../../routes/Posts/Posts";
 
-type PostCardProps = {
+export type PostCardProps = {
 	post: Post;
 };
 

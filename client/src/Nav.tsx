@@ -9,7 +9,7 @@ function Nav(): JSX.Element {
 
     return (
         <nav>
-            <h5> Gopher<span>Notes</span> </h5>
+            <h5> <Link to="/">Gopher<span>Notes</span> </Link></h5>
             <ul> 
                 <li className={navActiveClass(pathname, "/")}><Link to="/">Home</Link></li>
                 <li className={navActiveClass(pathname, "/post")}><Link to="/post">Post</Link></li>

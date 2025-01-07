@@ -5,7 +5,7 @@ import svg_search from "../../img/Search.svg";
 import SortBar from "./components/SortBar";
 import Filter from "./components/Filters";
 import styled from "styled-components";
-import PostsGrid from "./components/PostGrid/PostsGrid";
+import PostsGrid from "../../components/PostGrid/PostsGrid";
 
 const StyledApp = styled.div`
 	//   background-color: #f0f0f0;

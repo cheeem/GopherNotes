@@ -6,6 +6,7 @@ import Posts from "./routes/Posts/Posts.tsx";
 import Upload from "./routes/Upload/Upload.tsx";
 import NotFound from "./routes/NotFound/NotFound.tsx";
 import PostDetail from "./routes/PostDetail/PostDetail.tsx";
+import ProfilePage from "./routes/Profile/ProfilePage.tsx";
 
 export default function App(): JSX.Element {
 
@@ -21,6 +22,7 @@ export default function App(): JSX.Element {
                     </Route>
                     <Route path="/post/:postId" element={<PostDetail />} />
                     <Route path="/upload" element={<Upload />} />
+                    <Route path="/Profile" element={<ProfilePage/>} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </main>
