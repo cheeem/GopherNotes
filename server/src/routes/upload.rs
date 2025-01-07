@@ -2,19 +2,26 @@ use axum::extract::State;
 use axum::extract::multipart;
 use axum::body::Bytes;
 use axum::http::StatusCode;
+use axum::response::Json;
 use sqlx::Pool;
 use sqlx::mysql::MySql;
 use serde::Serialize;
 use std::sync::{ Arc, Mutex, MutexGuard, };
 use std::fs;
 use std::io::Write;
-use crate::{ AppState, IMG_PATH };
+use crate::{ AppState, UPLOAD_PATH };
+
+type UploadResult = (StatusCode, Json<UploadError>);
+
+trait UploadErrorResponse {
+    fn to_response(self, field: Option<&'static str>, msg: &'static str) -> UploadResult;
+}
 
 #[derive(Serialize)]
-struct UploadError {
+pub struct UploadError {
     status: u16,
     field: Option<&'static str>,
-    msg: String,
+    msg: &'static str,
 }
 
 enum UploadType {
@@ -44,6 +51,13 @@ struct DownloadFile {
     class_id: u32,
     professor_id: Option<u32>,
     file_name: String,
+    file_type: FileType,
+}
+
+#[derive(Debug)]
+enum FileType {
+    Image,
+    Pdf,
 }
 
 struct DownloadText {
@@ -51,6 +65,20 @@ struct DownloadText {
     class_id: u32,
     professor_id: Option<u32>,
     text: String,
+}
+
+impl UploadErrorResponse for StatusCode {
+    fn to_response(self, field: Option<&'static str>, msg: &'static str) -> (Self, Json<UploadError>) where Self: Sized {
+        
+        let upload_error: Json<UploadError> = Json(UploadError {
+            status: self.as_u16(),
+            field,
+            msg,
+        });
+
+        (self, upload_error)
+
+    }
 }
 
 impl Upload {
@@ -68,7 +96,7 @@ impl Upload {
         }
     }
     
-    async fn field<'a>(mut self, field: multipart::Field<'a>) -> Result<Self, StatusCode> {
+    async fn field<'a>(mut self, field: multipart::Field<'a>) -> Result<Self, UploadResult> {
 
         let field_name: Option<&str> = field.name();
 
@@ -80,16 +108,16 @@ impl Upload {
             "file" => {
 
                 if self.upload_type.is_some() {
-                    return Err(StatusCode::CONFLICT);
+                    return Err(StatusCode::CONFLICT.to_response(Some("file"), "Uploads Can Only Have One Upload Type"));
                 }
 
-                let file_name: &str = field.file_name().ok_or(StatusCode::UNPROCESSABLE_ENTITY)?;
+                let file_name: &str = field.file_name().ok_or(StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("file"), "Upload Did Not Include a Filename"))?;
 
-                let dot_pos: usize = file_name.rfind('.').ok_or(StatusCode::UNPROCESSABLE_ENTITY)?;
+                let dot_pos: usize = file_name.rfind('.').ok_or(StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("file"), "Filename Does Not Have a File Extension"))?;
 
                 self.file_ext = Some(file_name[dot_pos..file_name.len()].to_owned());
 
-                self.bytes = Some(field.bytes().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?);
+                self.bytes = Some(field.bytes().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("file"), "File is Improperly Formatted"))?);
 
                 self.upload_type = Some(UploadType::File);
 
@@ -97,28 +125,28 @@ impl Upload {
             "text" => {
 
                 if self.upload_type.is_some() {
-                    return Err(StatusCode::CONFLICT);
+                    return Err(StatusCode::CONFLICT.to_response(Some("text"), "Uploads Can Only Have One Upload Type"));
                 }
 
-                self.text = Some(field.text().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?); 
+                self.text = Some(field.text().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("text"), "Text is Improperly Formatted"))?); 
 
                 self.upload_type = Some(UploadType::Text);
 
             },
             "title" => {
-                self.title = Some(field.text().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?);
+                self.title = Some(field.text().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("title"), "Title is Improperly Formatted"))?);
             },
             "department_code" => {
-                self.department_code = Some(field.text().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?);
+                self.department_code = Some(field.text().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("department_code"), "Department Code is Improperly Formatted"))?);
             },
             "class_code" => {
-                self.class_code = Some(field.text().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?);
+                self.class_code = Some(field.text().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("class_code"), "Class Code is Improperly Formatted"))?);
             },
             "professor_id" => {
-                self.class_code = Some(
+                self.professor_id = Some(
                     field
-                        .text().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?
-                        .parse().map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?
+                        .text().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("professor_id"), "Professor ID is Improperly Formatted"))?
+                        .parse().map_err(|_| StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("professor_id"), "Professor ID is Not Numeric"))?
                 );
             }
             _ => (),
@@ -128,11 +156,11 @@ impl Upload {
 
     }
 
-    async fn from_multipart(mut multipart: multipart::Multipart) -> Result<Self, StatusCode> {
+    async fn from_multipart(mut multipart: multipart::Multipart) -> Result<Self, UploadResult> {
 
         let mut upload: Self = Self::new();
 
-        while let Some(field) = multipart.next_field().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)? {
+        while let Some(field) = multipart.next_field().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY.to_response(None, "Multipart Field is Improperly Formatted"))? {
             upload = upload.field(field).await?;
         }
 
@@ -140,7 +168,7 @@ impl Upload {
 
     }
 
-    async fn download(self, state: &Arc<AppState>) -> Result<Download, StatusCode> {
+    async fn download(self, state: &Arc<AppState>) -> Result<Download, UploadResult> {
 
         let sql: &str = "
             SELECT classes.id 
@@ -155,25 +183,24 @@ impl Upload {
             .bind(self.department_code)
             .fetch_one(&state.db)
             .await
-            .map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?;
+            .map_err(|_| StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("code"), "Class Not Found"))?;
 
         if self.upload_type.is_none() {
-            return Err(StatusCode::UNPROCESSABLE_ENTITY);
+            return Err(StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("upload_type"), "Upload Type Not Found"));
         }
 
         let upload: Download = match self.upload_type.unwrap() {
-
             UploadType::File => Download::File(DownloadFile::new(
-                &state.img_count,
-                self.title.ok_or(StatusCode::UNPROCESSABLE_ENTITY)?, 
-                &self.file_ext.ok_or(StatusCode::UNPROCESSABLE_ENTITY)?,
-                &self.bytes.ok_or(StatusCode::UNPROCESSABLE_ENTITY)?,
+                &state.upload_count,
+                self.title.ok_or(StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("title"), "Title Not Found"))?, 
+                &self.file_ext.ok_or(StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("file"), "File Extension Not Found"))?,
+                &self.bytes.ok_or(StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("file"), "File Bytes Not Found"))?,
                 class_id,
                 self.professor_id,
             )?),
             UploadType::Text => Download::Text(DownloadText::new(
-                self.title.ok_or(StatusCode::UNPROCESSABLE_ENTITY)?,
-                self.text.ok_or(StatusCode::UNPROCESSABLE_ENTITY)?,
+                self.title.ok_or(StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("title"), "Title Not Found"))?,
+                self.text.ok_or(StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("text"), "Text Not Found"))?,
                 class_id,
                 self.professor_id,
             )),
@@ -187,40 +214,40 @@ impl Upload {
 
 impl DownloadFile {
 
-    fn new(img_count: &Mutex<u32>, title: String, file_ext: &str, bytes: &Bytes, class_id: u32, professor_id: Option<u32>) -> Result<Self, StatusCode> {
+    fn new(upload_count: &Mutex<u32>, title: String, file_ext: &str, bytes: &Bytes, class_id: u32, professor_id: Option<u32>) -> Result<Self, UploadResult> {
 
-        let file_name: String = Self::download(img_count, file_ext, bytes)?;
+        let file_type: FileType = FileType::from_file_ext(file_ext).ok_or(StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("file"), "Unsupported File Type"))?;
+        let file_name: String = Self::download(upload_count, file_ext, bytes)?;
 
         Ok(Self {
             title,
             file_name,
+            file_type,
             class_id,
             professor_id,
         })
         
     }
 
-    fn download(img_count: &Mutex<u32>, file_ext: &str, bytes: &Bytes) -> Result<String, StatusCode> {
+    fn download(upload_count: &Mutex<u32>, file_ext: &str, bytes: &Bytes) -> Result<String, UploadResult> {
 
-        let file_name: String = Self::name_file(img_count, file_ext);
+        let file_name: String = Self::name_file(upload_count, file_ext);
 
-        let mut file: fs::File = fs::File::create(&format!("{}{file_name}", &*IMG_PATH)).map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?;
+        let mut file: fs::File = fs::File::create(&format!("{}{file_name}", &*UPLOAD_PATH)).map_err(|_| StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("file"), "File Could Not Be Downloaded"))?;
 
-        //let (mut file, path): (fs::File, String) = Self::new_file(img_count, path, file_ext)?;
-
-        file.write(&bytes).map_err(|_| StatusCode::UNPROCESSABLE_ENTITY)?;
+        file.write(&bytes).map_err(|_| StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("file"), "File Could Not Be Downloaded"))?;
 
         Ok(file_name)
 
     }
 
-    fn name_file(img_count: &Mutex<u32>, file_ext: &str) -> String {
+    fn name_file(upload_count: &Mutex<u32>, file_ext: &str) -> String {
 
-        let mut img_count: MutexGuard<u32> = img_count.lock().unwrap();
+        let mut upload_count: MutexGuard<u32> = upload_count.lock().unwrap();
 
-        *img_count += 1;
+        *upload_count += 1;
 
-        let mut file_name: String = img_count.to_string();
+        let mut file_name: String = upload_count.to_string();
 
         file_name.push_str(file_ext);
 
@@ -228,47 +255,16 @@ impl DownloadFile {
 
     }
 
-    // fn new_file(img_count: &Mutex<u32>, mut path: String, file_ext: &str) -> Result<(fs::File, String), StatusCode> {
-
-    //     loop {
-
-    //         println!("{path}");
-            
-    //         match fs::File::create(&path) {
-    //             Ok(file) => return Ok((file, path)),
-    //             Err(error) => {
-
-    //                 if let io::ErrorKind::AlreadyExists = error.kind() {
-
-    //                     let slash_pos: usize = path.rfind('/').ok_or(StatusCode::UNPROCESSABLE_ENTITY)?;
-
-    //                     path.truncate(slash_pos + 1);
-
-    //                     let file_name: &str = &Self::name_file(file_ext);
-
-    //                     path.push_str(file_name);
-
-    //                     continue;
-    //                 }
-
-    //                 return Err(StatusCode::UNPROCESSABLE_ENTITY);
-
-    //             }
-    //         }
-                
-    //     }
-
-    // }
-
     async fn log(&self, db: &Pool<MySql>) -> bool {
 
-        let sql: &str = "INSERT INTO posts (upload_type, title, file_name, class_id, professor_id, dt) VALUES (0, ?, ?, ?, ?, NOW())";
+        let sql: &str = "INSERT INTO posts (upload_type, title, file_name, class_id, professor_id, dt) VALUES (?, ?, ?, ?, ?, NOW())";
 
         sqlx::query(sql)
+            .bind(self.file_type.as_u8())
             .bind(&self.title)
             .bind(&self.file_name)
-            .bind(&self.class_id)
-            .bind(&self.professor_id)
+            .bind(self.class_id)
+            .bind(self.professor_id)
             .execute(db)
             .await
             .is_ok()
@@ -277,12 +273,31 @@ impl DownloadFile {
 
     fn remove_file(self) -> Result<(), Self> {
 
-        if fs::remove_file(&format!("{}{}", &*IMG_PATH, self.file_name)).is_err() {
+        if fs::remove_file(&format!("{}{}", &*UPLOAD_PATH, self.file_name)).is_err() {
             return Err(self);
         }
 
         Ok(())
 
+    }
+
+}
+
+impl FileType {
+
+    fn from_file_ext(file_ext: &str) -> Option<Self> {
+        match file_ext {
+            "jpg" | "jpeg" | "png" => Some(FileType::Image),
+            "pdf" => Some(FileType::Pdf),
+            _ => None,
+        }
+    }
+
+    fn as_u8(&self) -> u8 {
+        match self {
+            FileType::Image => 0,
+            FileType::Pdf => 1,
+        }
     }
 
 }
@@ -302,13 +317,13 @@ impl DownloadText {
 
     async fn log(&self, db: &Pool<MySql>) -> bool {
 
-        let sql: &str = "INSERT INTO posts (upload_type, title, text, class_id, professor_id, dt) VALUES (1, ?, ?, ?, ?, NOW())";
+        let sql: &str = "INSERT INTO posts (upload_type, title, text, class_id, professor_id, dt) VALUES (2, ?, ?, ?, ?, NOW())";
 
         sqlx::query(sql)
             .bind(&self.title)
             .bind(&self.text)
-            .bind(&self.class_id)
-            .bind(&self.professor_id)
+            .bind(self.class_id)
+            .bind(self.professor_id)
             .execute(db)
             .await
             .is_ok()
@@ -317,7 +332,8 @@ impl DownloadText {
 
 }
 
-pub async fn upload(State(state): State<Arc<AppState>>, multipart: multipart::Multipart) -> Result<(), StatusCode> {
+#[axum::debug_handler]
+pub async fn upload(State(state): State<Arc<AppState>>, multipart: multipart::Multipart) -> Result<(), UploadResult> {
 
     let download: Download = Upload::from_multipart(multipart)
         .await?
@@ -337,6 +353,6 @@ pub async fn upload(State(state): State<Arc<AppState>>, multipart: multipart::Mu
         download_file.remove_file().expect("failed to delete unlogged file"); // handle error case later
     }
 
-    return Err(StatusCode::UNPROCESSABLE_ENTITY)?;
+    return Err(StatusCode::UNPROCESSABLE_ENTITY.to_response(None, "Upload Could Not Be Logged"));
 
 }

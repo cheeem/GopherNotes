@@ -22,11 +22,11 @@ mod routes;
 
 pub struct AppState {
     db: Pool<MySql>,
-    img_count: Mutex<u32>,
+    upload_count: Mutex<u32>,
 }
 
 lazy_static! {
-    static ref IMG_PATH: String = env::var("IMG_PATH").expect("img path env");
+    static ref UPLOAD_PATH: String = env::var("UPLOAD_PATH").expect("upload path env");
 }
 
 #[tokio::main]
@@ -39,7 +39,7 @@ async fn main() {
     let server_addr: &str = &env::var("SERVER_ADDR").expect("server addr env");
     let client_addr: &str = &env::var("CLIENT_ADDR").expect("client addr env");
     
-    let img_count: Mutex<u32> = Mutex::new(get_img_count());
+    let upload_count: Mutex<u32> = Mutex::new(get_upload_count());
 
     let cors: CorsLayer = CorsLayer::new()
         .allow_origin(client_addr.parse::<HeaderValue>().expect("client addr parse"))
@@ -54,7 +54,7 @@ async fn main() {
 
     let state: Arc<AppState> = Arc::new(AppState {
         db,
-        img_count,
+        upload_count,
     });
 
     let app: Router = Router::new() 
@@ -79,11 +79,11 @@ async fn main() {
 
 }
 
-fn get_img_count() -> u32 {
+fn get_upload_count() -> u32 {
 
-    let dir: fs::ReadDir = fs::read_dir(&*IMG_PATH).expect("read img dir");
+    let dir: fs::ReadDir = fs::read_dir(&*UPLOAD_PATH).expect("read img dir");
 
-    let mut img_count: u32 = 0;
+    let mut upload_count: u32 = 0;
 
     for entry in dir {
         
@@ -93,14 +93,14 @@ fn get_img_count() -> u32 {
         let dot_pos: usize = file_name.rfind('.').expect("img file has not file extension");
         let file_name: &str = &file_name[..dot_pos];
         
-        let img_idx: u32 = file_name.parse().expect("img file name is not numerical");
+        let upload_idx: u32 = file_name.parse().expect("img file name is not numerical");
         
-        if img_idx > img_count {
-            img_count = img_idx
+        if upload_idx > upload_count {
+            upload_count = upload_idx
         }
 
     }
 
-    img_count
+    upload_count
 
 }
