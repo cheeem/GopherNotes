@@ -1,37 +1,58 @@
-import { FormEvent } from "react";
+import { useState, useRef, FormEvent } from "react";
 import { base_api_url } from "../../constants";
+import svg_upload from "../../img/Upload.svg";
+import "./Upload.css";
 
 export default function Upload() {
 
+    const [upload_type_is_file, setUploadTypeIsFile] = useState(true);
+
+    const [file_name, setFileName] = useState<null | string>(null);
+    const file_input = useRef<HTMLInputElement>(null);
+
     return (
-        <form action={`${base_api_url}/upload/upload`} onSubmit={upload_file}>
-            <div>
-                <label htmlFor="">departmenrt_code</label>
-                <input type="text" name="department_code" />
-            </div>
-            <div>
-                <label htmlFor="">class_code</label>
-                <input type="text" name="class_code" />
-            </div>
-            <div>
-                <label htmlFor="">title</label>
-                <input type="text" name="title" />
-            </div>
-            <div>
-                <label htmlFor="">text</label>
-                <textarea name="text"></textarea>
-            </div>
-            {/* <div>
-                <label htmlFor="">file</label>
-                <input type="file" name="file" />
-            </div> */}
-            <button type="submit">Upload</button>
-        </form>
+        <article id="upload">
+            <form action={`${base_api_url}/upload/upload`} onSubmit={upload}>
+                <div className="form-header">
+                    <h1>Post to Gopher<span>Notes</span></h1>
+                </div>
+                <ul>
+                    <li>
+                        <label htmlFor="upload-department-code">Department Code</label>
+                        <input id="upload-department-code" type="text" name="department_code"  required />
+                    </li>
+                    <li>
+                        <label htmlFor="upload-class-code">Class Code</label>
+                        <input id="upload-class-code" type="text" name="class_code" />
+                    </li>
+                    <li>
+                        <label htmlFor="upload-title">Post Title</label>
+                        <input id="upload-title" type="text" name="title" />
+                    </li>
+                    <li className="upload-field">
+                        <div className="upload-type">
+                            <button className={upload_type_is_file ? "active" : ""} onClick={() => setUploadTypeIsFile(true)}>File</button>
+                            <button className={upload_type_is_file ? "" : "active"} onClick={() => setUploadTypeIsFile(false)}>Text</button>
+                        </div>
+                        {upload_type_is_file ? 
+                            <button className="file-upload" type="button" onClick={() => file_input.current!.click()}>
+                                <input ref={file_input} type="file" name="files" accept=".jpg,.jpeg,.png,.pdf" required onChange={() => setFileName(file_input.current?.files?.[0].name ?? null)} />
+                                {file_name ? <p>{file_name}</p> : <><img src={svg_upload} alt="" /><p>Upload File</p></>}
+                            </button> : 
+                            <textarea name="text"></textarea>
+                        }
+                    </li>
+                </ul>
+                <div className="form-footer">
+                    <button type="submit">Post to GopherNotes</button>
+                </div>
+            </form>
+        </article>
     )
 
 }
 
-function upload_file(e: FormEvent<HTMLFormElement>) {
+function upload(e: FormEvent<HTMLFormElement>) {
 
     e.preventDefault();
 
