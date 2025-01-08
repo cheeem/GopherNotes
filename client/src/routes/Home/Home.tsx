@@ -159,7 +159,7 @@ function Class(umn_class: UMNClass, index: number): JSX.Element {
                 </div>
                 <div className="link">
                     <Link to={`/${umn_class.department_code}/${umn_class.class_code}`}>
-                        <p> View All {umn_class.post_count} Posts </p>
+                        <p> View {umn_class.post_count === 1 ? `${umn_class.post_count} Post` : `${umn_class.post_count} Posts`} </p>
                     </Link>
                 </div>
             </div>

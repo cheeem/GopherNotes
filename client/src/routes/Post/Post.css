@@ -46,6 +46,7 @@
 
     background-color: var(--dark1);
 
+    font-family: monospace;
     font-weight: 800;
     color: var(--light1);
 }
@@ -59,22 +60,32 @@
     font-size: 1em;
 }
 
-#post .content .image {
+#post .image {
     padding: 1em;
 
     background-color: var(--dark1);
 
     width: 100%;
-    height: 30em;
+    height: 65vh;
 }
 
-#post .content .image img {
+#post .image img {
     width: 100%;
     height: 100%;
 
     object-fit: contain;
 
     /* border-radius: 1em; */
+}
+
+#post .pdf {
+    width: 100%;
+    height: 65vh;
+}
+
+#post .pdf iframe {
+    width: 100%;
+    height: 100%;
 }
 
 #post .post-footer {

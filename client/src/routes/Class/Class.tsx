@@ -1,8 +1,8 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import { useParams, Link } from "react-router-dom";
-import { base_api_url } from "../../constants";
-import "./Class.css";
+import { base_api_url, uploads_path } from "../../constants";
 import svg_search from "../../img/Search.svg";
+import "./Class.css";
 
 type Post = {
     id: number,
@@ -11,8 +11,8 @@ type Post = {
     upload_type: number,
     file_name?: string,
     dt: string, 
-    text?: string | null,
-    professor_name: string,
+    text?: string,
+    professor_name?: string | null,
     user_id: number,
     username: string,
 }
@@ -40,6 +40,8 @@ export default function Class(): JSX.Element {
     useEffect(() => {
         searchPosts(department_code, class_code, null, search_option_active, setPosts);
     }, [search_option_active])
+
+    console.log(posts)
 
     return (
         <article id="class">
@@ -118,12 +120,12 @@ function Post(props: { post: Post, department_code: string, class_code: string }
                 </div>
             </div>
             <Link to={`/${props.department_code}/${props.class_code}/post/${props.post.id}`}>
-                <div className="image"><img src={props.post.file_name} alt="" /></div>
+                <PostContent post={props.post} />
             </Link>
             <div className="post-footer">
                 <div>
                     <p>{props.department_code} {props.class_code}</p>
-                    <p>Professor {props.post.professor_name}</p>
+                    <p>{props.post.professor_name ? `Professor ${props.post.professor_name}` : ""}</p>
                 </div>
                 <p>{new Date(props.post.dt).toLocaleDateString()}</p>
             </div>
@@ -131,30 +133,38 @@ function Post(props: { post: Post, department_code: string, class_code: string }
     )
 }
 
-// function renderPost(post: Post) {
+function PostContent(props: { post: Post }) {
 
-//     switch(post.upload_type) {
-//         case 0:
-//             return <ImagePost post={post} />
-//         case 1: 
-//             return <PDFPost post={post} /> 
-//         case 2: 
-//             return <TextPost post={post} />
-//     }
+    switch(props.post.upload_type) {
+        case 0:
+            return <PostImage post={props.post} />
+        case 1: 
+            return <PostPDF post={props.post} /> 
+        case 2:
+            return <PostText post={props.post} />
+        default:
+            throw Error();
+    }
 
-// }
+}
 
-// function ImagePost({ post }: { post: Post }) {
-//     return <img src={post.path} alt="" />
-// }
+function PostImage(props: { post: Post }) {
+    return <div className="image">
+        <img src={`${uploads_path}${props.post.file_name}`} alt="" />
+    </div>
+}
 
-// function PDFPost({ post }: { post: Post }) {
-//     return null;
-// }
+function PostPDF(props: { post: Post }) {
+    return <div className="pdf">
+        <iframe src={`${uploads_path}${props.post.file_name}`}></iframe>
+    </div>;
+}
 
-// function TextPost({ post }: { post: Post }) {
-//     return null;
-// }
+function PostText(props: { post: Post }) {
+    return <div className="text">
+        <p>{props.post.text}</p>
+    </div>;
+}
 
 function optionActiveClass(active: number, search_option: number): string {
     
@@ -168,17 +178,17 @@ function optionActiveClass(active: number, search_option: number): string {
 
 async function searchPosts(department_code: string | null, class_code: string | null, input: string | null, search_option_active: number, setPosts: React.Dispatch<React.SetStateAction<Post[] | null>>) {
 
-    setPosts(Array.from({ length: 8, }, (_, i) => ({
-        id: i+1, 
-        title: "My Cat 123",
-        score: 5,
-        upload_type: 0,
-        file_name: "https://t4.ftcdn.net/jpg/02/66/72/41/360_F_266724172_Iy8gdKgMa7XmrhYYxLCxyhx6J7070Pr8.jpg",
-        dt: "2024-04-20 00:00:00",
-        professor_name: "Michael Rodgers",
-        user_id: 2,
-        username: "jonathansmith",
-    }))); return;
+    // setPosts(Array.from({ length: 8, }, (_, i) => ({
+    //     id: i+1, 
+    //     title: "My Cat 123",
+    //     score: 5,
+    //     upload_type: 0,
+    //     file_name: "https://t4.ftcdn.net/jpg/02/66/72/41/360_F_266724172_Iy8gdKgMa7XmrhYYxLCxyhx6J7070Pr8.jpg",
+    //     dt: "2024-04-20 00:00:00",
+    //     professor_name: "Michael Rodgers",
+    //     user_id: 2,
+    //     username: "jonathansmith",
+    // }))); return;
 
     const search_by: string = search_options[search_option_active].query;
 
