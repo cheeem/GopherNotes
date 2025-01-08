@@ -115,7 +115,7 @@ impl Upload {
 
                 let dot_pos: usize = file_name.rfind('.').ok_or(StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("file"), "Filename Does Not Have a File Extension"))?;
 
-                self.file_ext = Some(file_name[dot_pos..file_name.len()].to_owned());
+                self.file_ext = Some(file_name[dot_pos+1..file_name.len()].to_owned());
 
                 self.bytes = Some(field.bytes().await.map_err(|_| StatusCode::UNPROCESSABLE_ENTITY.to_response(Some("file"), "File is Improperly Formatted"))?);
 
@@ -249,25 +249,26 @@ impl DownloadFile {
 
         let mut file_name: String = upload_count.to_string();
 
+        file_name.push('.');
         file_name.push_str(file_ext);
 
         file_name
 
     }
 
-    async fn log(&self, db: &Pool<MySql>) -> bool {
+    async fn log(&self, db: &Pool<MySql>, user_id: u32) -> bool {
 
-        let sql: &str = "INSERT INTO posts (upload_type, title, file_name, class_id, professor_id, dt) VALUES (?, ?, ?, ?, ?, NOW())";
+        let sql: &str = "INSERT INTO posts (user_id, upload_type, title, file_name, class_id, professor_id, dt) VALUES (?, ?, ?, ?, ?, ?, NOW())";
 
         sqlx::query(sql)
+            .bind(user_id)
             .bind(self.file_type.as_u8())
             .bind(&self.title)
             .bind(&self.file_name)
             .bind(self.class_id)
             .bind(self.professor_id)
             .execute(db)
-            .await
-            .is_ok()
+            .await.is_ok()
 
     }
 
@@ -286,7 +287,8 @@ impl DownloadFile {
 impl FileType {
 
     fn from_file_ext(file_ext: &str) -> Option<Self> {
-        match file_ext {
+
+        match file_ext.to_lowercase().as_str() {
             "jpg" | "jpeg" | "png" => Some(FileType::Image),
             "pdf" => Some(FileType::Pdf),
             _ => None,
@@ -315,11 +317,12 @@ impl DownloadText {
 
     }
 
-    async fn log(&self, db: &Pool<MySql>) -> bool {
+    async fn log(&self, db: &Pool<MySql>, user_id: u32) -> bool {
 
-        let sql: &str = "INSERT INTO posts (upload_type, title, text, class_id, professor_id, dt) VALUES (2, ?, ?, ?, ?, NOW())";
+        let sql: &str = "INSERT INTO posts (user_id, upload_type, title, text, class_id, professor_id, dt) VALUES (?, 2, ?, ?, ?, ?, NOW())";
 
         sqlx::query(sql)
+            .bind(user_id)
             .bind(&self.title)
             .bind(&self.text)
             .bind(self.class_id)
@@ -335,14 +338,16 @@ impl DownloadText {
 #[axum::debug_handler]
 pub async fn upload(State(state): State<Arc<AppState>>, multipart: multipart::Multipart) -> Result<(), UploadResult> {
 
+    let user_id: u32 = 1;
+
     let download: Download = Upload::from_multipart(multipart)
         .await?
         .download(&state)
         .await?;
 
     let file_logged: bool = match &download {
-        Download::File(download_file) => download_file.log(&state.db).await,
-        Download::Text(download_text) => download_text.log(&state.db).await,
+        Download::File(download_file) => download_file.log(&state.db, user_id).await,
+        Download::Text(download_text) => download_text.log(&state.db, user_id).await,
     };
 
     if file_logged {
