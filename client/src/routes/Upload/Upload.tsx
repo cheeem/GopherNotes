@@ -53,7 +53,7 @@ function FileUpload() {
 
     return (
         <button type="button" className="file-upload" onClick={() => file_input.current!.click()}>
-            <input ref={file_input} type="file" name="files" accept=".jpg,.jpeg,.png,.pdf" required 
+            <input ref={file_input} type="file" name="file" accept=".jpg,.jpeg,.png,.pdf" required 
                 onChange={() => setFileName(file_input.current?.files?.[0].name ?? null)} 
             />
             {file_name ? 
@@ -80,6 +80,12 @@ function upload(e: FormEvent<HTMLFormElement>) {
     fetch(url, {
         method: "POST",
         body: data,
-    }).then(res => console.log(res.status));
+    }).then(print_errors);
 
 } 
+
+function print_errors(res: Response) {
+    if(res.status !== 200) {
+        res.json().then((error: any) => console.log(error));
+    }
+}
