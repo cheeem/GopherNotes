@@ -12,12 +12,13 @@ use crate::AppState;
 #[derive(Serialize, FromRow, Deserialize)]
 pub struct Post {
     title: String, 
+    score: i32,
     upload_type: u8,
-    path: String,
+    file_name: Option<String>,
     #[serde(with = "chrono::serde::ts_seconds")]
     dt: DateTime<Utc>,
     text: Option<String>,
-    professor_name: String,
+    professor_name: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -32,7 +33,7 @@ pub async fn get_post(
 
     let sql: &str = "
         SELECT 
-            posts.title 
+            posts.title, 
             posts.score,
             posts.upload_type,
             posts.file_name,
@@ -46,7 +47,7 @@ pub async fn get_post(
         JOIN departments ON classes.department_id = departments.id
         LEFT JOIN professors ON posts.professor_id = professors.id
         LEFT JOIN users ON posts.user_id = users.id 
-        WHERE deleted = 0 
+        WHERE posts.deleted = 0 
         AND posts.id = ? 
     ";
         

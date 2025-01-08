@@ -14,12 +14,13 @@ use crate::AppState;
 pub struct Post {
     id: u32,
     title: String,
+    score: i32,
     upload_type: u8,
-    path: String,
+    file_name: Option<String>,
     #[serde(with = "chrono::serde::ts_seconds")]
     dt: DateTime<Utc>,
     text: Option<String>,
-    professor_name: String, // TODO: add text field
+    professor_name: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -57,9 +58,10 @@ pub async fn get_posts_by_title(
             JOIN departments ON classes.department_id = departments.id
             LEFT JOIN professors ON posts.professor_id = professors.id
             LEFT JOIN users ON posts.user_id = users.id 
-            WHERE deleted = 0 
-            AND departments.code = ?
-            AND classes.code = ?
+            WHERE posts.deleted = 0 
+            AND departments.code = ? 
+            AND classes.code = ? 
+            AND LOWER(title) LIKE LOWER(?)
         ",
         None => "
             SELECT 
@@ -78,16 +80,15 @@ pub async fn get_posts_by_title(
             JOIN departments ON classes.department_id = departments.id
             LEFT JOIN professors ON posts.professor_id = professors.id
             LEFT JOIN users ON posts.user_id = users.id 
-            WHERE deleted = 0 
-            AND departments.code = ? 
-            AND classes.code = ? 
-            AND LOWER(title) LIKE LOWER(?)
+            WHERE posts.deleted = 0 
+            AND departments.code = ?
+            AND classes.code = ?
         "
     };
 
     let mut query: sqlx::query::QueryAs<MySql, Post, MySqlArguments> = sqlx::query_as(sql)
         .bind(department_code.to_uppercase())
-        .bind(class_code.to_uppercase());
+        .bind(class_code);
 
     if let Some(input) = input {
         query = query.bind(format!("%{input}%"));
@@ -127,9 +128,10 @@ pub async fn get_posts_by_professor(
             JOIN departments ON classes.department_id = departments.id
             LEFT JOIN professors ON posts.professor_id = professors.id
             LEFT JOIN users ON posts.user_id = users.id 
-            WHERE deleted = 0 
-            AND departments.code = ?
-            AND classes.code = ?
+            WHERE posts.deleted = 0 
+            AND departments.code = ? 
+            AND classes.code = ? 
+            AND LOWER(professor.name) LIKE LOWER(?)
         ",
         None => "
             SELECT 
@@ -148,16 +150,15 @@ pub async fn get_posts_by_professor(
             JOIN departments ON classes.department_id = departments.id
             LEFT JOIN professors ON posts.professor_id = professors.id
             LEFT JOIN users ON posts.user_id = users.id 
-            WHERE deleted = 0 
-            AND departments.code = ? 
-            AND classes.code = ? 
-            AND LOWER(professor.name) LIKE LOWER(?)
+            WHERE posts.deleted = 0 
+            AND departments.code = ?
+            AND classes.code = ?
         "
     };
 
     let mut query: sqlx::query::QueryAs<MySql, Post, MySqlArguments> = sqlx::query_as(sql)
         .bind(department_code.to_uppercase())
-        .bind(class_code.to_uppercase());
+        .bind(class_code);
 
     if let Some(input) = input {
         query = query.bind(format!("%{input}%"));
