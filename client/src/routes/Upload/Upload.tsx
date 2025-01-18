@@ -1,15 +1,18 @@
 import { useState, useRef, FormEvent } from "react";
+import { useNavigate, NavigateFunction } from "react-router-dom";
 import { base_api_url } from "../../constants";
 import svg_upload from "../../img/Upload.svg";
 import "./Upload.css";
 
 export default function Upload() {
 
+    const navigate: NavigateFunction = useNavigate();
+
     const [upload_type_is_file, setUploadTypeIsFile] = useState(true);
 
     return (
         <article id="upload">
-            <form action={`${base_api_url}/upload/upload`} onSubmit={upload}>
+            <form action={`${base_api_url}/upload/upload`} onSubmit={(e: FormEvent<HTMLFormElement>) => upload(e, navigate)}>
                 <div className="form-header">
                     <h1>Post to Gopher<span>Notes</span></h1>
                 </div>
@@ -68,7 +71,7 @@ function FileUpload() {
 
 }
 
-function upload(e: FormEvent<HTMLFormElement>) {
+function upload(e: FormEvent<HTMLFormElement>, navigate: NavigateFunction) {
 
     e.preventDefault();
 
@@ -80,12 +83,15 @@ function upload(e: FormEvent<HTMLFormElement>) {
     fetch(url, {
         method: "POST",
         body: data,
-    }).then(print_errors);
+    }).then((res: Response) => {
 
-} 
-
-function print_errors(res: Response) {
-    if(res.status !== 200) {
+        if(res.status == 200) {
+            navigate("/");
+            return;
+        }
+            
         res.json().then((error: any) => console.log(error));
-    }
+        
+    });
+
 }
