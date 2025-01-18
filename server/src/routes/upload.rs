@@ -351,7 +351,7 @@ pub async fn upload(State(state): State<Arc<AppState>>, multipart: multipart::Mu
     };
 
     if file_logged {
-        return Ok(())
+        return Ok(());
     }
         
     if let Download::File(download_file) = download {

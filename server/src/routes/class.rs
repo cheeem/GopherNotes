@@ -24,19 +24,13 @@ pub struct Post {
 }
 
 #[derive(Deserialize)]
-pub struct DepartmentClassCode {
-    department_code: String,
-    class_code: String,
-}
-
-#[derive(Deserialize)]
 pub struct PostSearch {
     input: Option<String>,
 }
 
 pub async fn get_posts_by_title(
     State(state): State<Arc<AppState>>, 
-    Path(DepartmentClassCode { department_code, class_code }): Path<DepartmentClassCode>,
+    Path((department_code, class_code)): Path<(String, String)>,
     Query(PostSearch { input }): Query<PostSearch>,
 ) -> Result<response::Json<Vec<Post>>, StatusCode> {
 
@@ -106,7 +100,7 @@ pub async fn get_posts_by_title(
 
 pub async fn get_posts_by_professor(
     State(state): State<Arc<AppState>>, 
-    Path(DepartmentClassCode { department_code, class_code }): Path<DepartmentClassCode>,
+    Path((department_code, class_code)): Path<(String, String)>,
     Query(PostSearch { input }): Query<PostSearch>,
 ) -> Result<response::Json<Vec<Post>>, StatusCode> {
 
