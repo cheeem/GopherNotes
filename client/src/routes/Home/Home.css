@@ -1,4 +1,7 @@
 #home {
+    min-height: calc(100vh - var(--nav-height));
+    min-height: calc(100svh - var(--nav-height));
+
     background-color: var(--light2);
 }
 
