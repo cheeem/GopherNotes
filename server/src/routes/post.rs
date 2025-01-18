@@ -1,4 +1,4 @@
-use axum::extract::{ State, Query };
+use axum::extract::{ State, Path };
 use axum::response;
 use axum::http::StatusCode;
 // use sqlx::types::chrono;
@@ -21,14 +21,9 @@ pub struct Post {
     professor_name: Option<String>,
 }
 
-#[derive(Deserialize)]
-pub struct PostId {
-    id: u32,
-}
-
 pub async fn get_post(
     State(state): State<Arc<AppState>>, 
-    Query(PostId { id }): Query<PostId>,
+    Path(id): Path<u32>,
 ) -> Result<response::Json<Post>, StatusCode> {
 
     let sql: &str = "
@@ -58,5 +53,47 @@ pub async fn get_post(
         .map_err(|e| { println!("{:#?}", e); return StatusCode::INTERNAL_SERVER_ERROR })?;
 
     Ok(response::Json(post))
+
+}
+
+pub async fn increment_post_score(
+    State(state): State<Arc<AppState>>, 
+    Path(id): Path<u32>,
+) -> Result<(), StatusCode> {
+
+    let sql: &str = "
+        UPDATE posts 
+        SET score = score + 1 
+        WHERE id = ? 
+    ";
+
+    sqlx::query(sql)
+        .bind(id)
+        .execute(&state.db)
+        .await 
+        .map_err(|e| { println!("{:#?}", e); return StatusCode::UNPROCESSABLE_ENTITY })?;
+
+    return Ok(())
+
+}
+
+pub async fn decrement_post_score(
+    State(state): State<Arc<AppState>>, 
+    Path(id): Path<u32>,
+) -> Result<(), StatusCode> {
+
+    let sql: &str = "
+        UPDATE posts 
+        SET score = score - 1 
+        WHERE id = ? 
+    ";
+
+    sqlx::query(sql)
+        .bind(id)
+        .execute(&state.db)
+        .await 
+        .map_err(|e| { println!("{:#?}", e); return StatusCode::UNPROCESSABLE_ENTITY })?;
+
+    return Ok(())
 
 }

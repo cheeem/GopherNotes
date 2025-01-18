@@ -27,6 +27,8 @@ pub struct AppState {
 
 lazy_static! {
     static ref UPLOAD_PATH: String = env::var("UPLOAD_PATH").expect("upload path env");
+    static ref SERVER_ADDR: String = env::var("SERVER_ADDR").expect("server addr env");
+    static ref CLIENT_ADDR: String = env::var("CLIENT_ADDR").expect("client addr env");
 }
 
 #[tokio::main]
@@ -35,14 +37,11 @@ async fn main() {
     dotenv().ok();
 
     let db_url: &str = &env::var("DB_URL").expect("db url env");
-
-    let server_addr: &str = &env::var("SERVER_ADDR").expect("server addr env");
-    let client_addr: &str = &env::var("CLIENT_ADDR").expect("client addr env");
     
     let upload_count: Mutex<u32> = Mutex::new(get_upload_count());
 
     let cors: CorsLayer = CorsLayer::new()
-        .allow_origin(client_addr.parse::<HeaderValue>().expect("client addr parse"))
+        .allow_origin(CLIENT_ADDR.parse::<HeaderValue>().expect("client addr parse"))
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
         .allow_credentials(true)
         .allow_headers([AUTHORIZATION, ACCEPT, CONTENT_TYPE]);
@@ -62,12 +61,14 @@ async fn main() {
         .route("/class/:department_code/:class_code/get_posts_by_professor", get(routes::class::get_posts_by_professor))
         .route("/home/get_classes_by_code", get(routes::home::get_classes_by_code))
         .route("/home/get_classes_by_professor", get(routes::home::get_classes_by_professor))
-        .route("/post/get_post", get(routes::post::get_post))
+        .route("/post/:id/get_post", get(routes::post::get_post))
+        .route("/post/:id/increment_post_score", put(routes::post::increment_post_score))
+        .route("/post/:id/decrement_post_score", put(routes::post::decrement_post_score))
         .route("/upload/upload", post(routes::upload::upload))
         .layer(cors)
         .with_state(state.clone());
 
-    let listener: TcpListener = TcpListener::bind(server_addr)
+    let listener: TcpListener = TcpListener::bind(&*SERVER_ADDR)
         .await
         .expect("tcp listener");
 
@@ -81,19 +82,19 @@ async fn main() {
 
 fn get_upload_count() -> u32 {
 
-    let dir: fs::ReadDir = fs::read_dir(&*UPLOAD_PATH).expect("read img dir");
+    let dir: fs::ReadDir = fs::read_dir(&*UPLOAD_PATH).expect("read upload dir");
 
     let mut upload_count: u32 = 0;
 
     for entry in dir {
         
-        let file_name: ffi::OsString = entry.expect("img entry error").file_name();
-        let file_name: &str = file_name.to_str().expect("img file name not found");
+        let file_name: ffi::OsString = entry.expect("upload entry error").file_name();
+        let file_name: &str = file_name.to_str().expect("upload file name not found");
 
-        let dot_pos: usize = file_name.rfind('.').expect("img file has not file extension");
+        let dot_pos: usize = file_name.rfind('.').expect("upload file has not file extension");
         let file_name: &str = &file_name[..dot_pos];
         
-        let upload_idx: u32 = file_name.parse().expect("img file name is not numerical");
+        let upload_idx: u32 = file_name.parse().expect("upload file name is not numerical");
         
         if upload_idx > upload_count {
             upload_count = upload_idx
