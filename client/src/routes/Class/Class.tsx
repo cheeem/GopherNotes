@@ -106,6 +106,9 @@ function SearchOptions(props: { active: number, setActive: React.Dispatch<React.
 }
 
 function Post(props: { post: Post, department_code: string, class_code: string }) {
+
+    const [score, setScore] = useState<number>(props.post.score);
+
     return (
         <li className="post">
             <div className="post-header">
@@ -114,9 +117,9 @@ function Post(props: { post: Post, department_code: string, class_code: string }
                     <Link to={`/user/${props.post.user_id}`}><p className="username">{props.post.username}</p></Link>
                 </div>
                 <div className="post-vote">
-                    <h5>{props.post.score}</h5>
-                    <button>+</button>
-                    <button>-</button>
+                    <h5>{score}</h5>
+                    <button onClick={() => increment_post_score(props.post.id, setScore)}>+</button>
+                    <button onClick={() => decrement_post_score(props.post.id, setScore)}>-</button>
                 </div>
             </div>
             <Link to={`/${props.department_code}/${props.class_code}/post/${props.post.id}`}>
@@ -212,6 +215,54 @@ async function searchPosts(department_code: string | null, class_code: string | 
         
     try {
         setPosts(await res!.json());
+    } catch(err) {
+        console.log(err);
+    }
+
+}
+
+async function increment_post_score(post_id: number | string, setScore: React.Dispatch<React.SetStateAction<number>>) {
+
+    let url: string = `${base_api_url}/post/${post_id}/increment_post_score`;
+
+    let res: Response;
+
+    try {   
+        res = await fetch(url, { method: "PUT" });
+    } catch(err) {
+        return console.log(err);
+    }
+        
+    if(res!.ok === false) {
+        return console.log(res.status);
+    }
+        
+    try {
+        setScore((score: number) => score + 1);
+    } catch(err) {
+        console.log(err);
+    }
+
+}
+
+async function decrement_post_score(post_id: number | string, setScore: React.Dispatch<React.SetStateAction<number>>) {
+
+    let url: string = `${base_api_url}/post/${post_id}/decrement_post_score`;
+
+    let res: Response;
+
+    try {   
+        res = await fetch(url, { method: "PUT" });
+    } catch(err) {
+        return console.log(err);
+    }
+        
+    if(res!.ok === false) {
+        return console.log(res.status);
+    }
+        
+    try {
+        setScore((score: number) => score - 1);
     } catch(err) {
         console.log(err);
     }

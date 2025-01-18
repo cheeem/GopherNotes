@@ -1,3 +1,10 @@
+#class {
+    min-height: calc(100vh - var(--nav-height));
+    min-height: calc(100svh - var(--nav-height));
+
+    background-color: var(--light2);
+}
+
 #class .hero {
     position: relative;
 
@@ -150,8 +157,6 @@
 
 #class .posts {
     padding: 5em var(--side-padding);
-
-    background-color: var(--light2);
 }
 
 #class .posts ul {

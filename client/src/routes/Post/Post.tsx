@@ -1,4 +1,4 @@
-import { useState, useEffect, } from "react";
+import React, { useState, useEffect, } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base_api_url, uploads_path } from "../../constants";
 import "./Post.css";
@@ -32,7 +32,7 @@ export default function Post() {
 
     return (
         <article id="post">
-            {post ? <Body post={post} department_code={department_code}  class_code={class_code} /> : <LoadingBody />}
+            {post ? <Body id={post_id} post={post} department_code={department_code}  class_code={class_code} /> : <LoadingBody />}
             {/* <section className="comments">
             </section> */}
         </article>
@@ -56,7 +56,9 @@ function LoadingBody() {
     )
 }
 
-function Body(props: { post: Post, department_code: string, class_code: string, }) {
+function Body(props: { id: string, post: Post, department_code: string, class_code: string, }) {
+
+    const [score, setScore] = useState<number>(props.post.score);
 
     return (
         <section>
@@ -66,9 +68,9 @@ function Body(props: { post: Post, department_code: string, class_code: string, 
                     <Link to={`/user/${props.post.user_id}`}><p className="username">{props.post.username}</p></Link>
                 </div>
                 <div className="post-vote">
-                    <h5>{props.post.score}</h5>
-                    <button>+</button>
-                    <button>-</button>
+                    <h5>{score}</h5>
+                    <button onClick={() => increment_post_score(props.id, setScore)}>+</button>
+                    <button onClick={() => decrement_post_score(props.id, setScore)}>-</button>
                 </div>
             </header>
             <PostContent post={props.post} />
@@ -132,7 +134,7 @@ async function getPost(post_id: string, setPost: React.Dispatch<React.SetStateAc
     //     username: "jonathansmith",
     // });
 
-    let url: string = `${base_api_url}/post/get_post?id=${post_id}`;
+    let url: string = `${base_api_url}/post/${post_id}/get_post`;
 
     let res: Response;
 
@@ -148,6 +150,54 @@ async function getPost(post_id: string, setPost: React.Dispatch<React.SetStateAc
         
     try {
         setPost(await res!.json());
+    } catch(err) {
+        console.log(err);
+    }
+
+}
+
+async function increment_post_score(post_id: number | string, setScore: React.Dispatch<React.SetStateAction<number>>) {
+
+    let url: string = `${base_api_url}/post/${post_id}/increment_post_score`;
+
+    let res: Response;
+
+    try {   
+        res = await fetch(url, { method: "PUT" });
+    } catch(err) {
+        return console.log(err);
+    }
+        
+    if(res!.ok === false) {
+        return console.log(res.status);
+    }
+        
+    try {
+        setScore((score: number) => score + 1);
+    } catch(err) {
+        console.log(err);
+    }
+
+}
+
+async function decrement_post_score(post_id: number | string, setScore: React.Dispatch<React.SetStateAction<number>>) {
+
+    let url: string = `${base_api_url}/post/${post_id}/decrement_post_score`;
+
+    let res: Response;
+
+    try {   
+        res = await fetch(url, { method: "PUT" });
+    } catch(err) {
+        return console.log(err);
+    }
+        
+    if(res!.ok === false) {
+        return console.log(res.status);
+    }
+        
+    try {
+        setScore((score: number) => score - 1);
     } catch(err) {
         console.log(err);
     }
