@@ -153,13 +153,13 @@ function PostContent(props: { post: Post }) {
 
 function PostImage(props: { post: Post }) {
     return <div className="image">
-        <img src={`${uploads_path}${props.post.file_name}`} alt="" />
+        <img src={`${uploads_path}/${props.post.file_name}`} alt="" />
     </div>
 }
 
 function PostPDF(props: { post: Post }) {
     return <div className="pdf">
-        <iframe src={`${uploads_path}${props.post.file_name}`}></iframe>
+        <iframe src={`${uploads_path}/${props.post.file_name}`}></iframe>
     </div>;
 }
 
@@ -220,7 +220,6 @@ async function searchPosts(department_code: string | null, class_code: string | 
     }
 
 }
-
 async function increment_post_score(post_id: number | string, setScore: React.Dispatch<React.SetStateAction<number>>) {
 
     let url: string = `${base_api_url}/post/${post_id}/increment_post_score`;
@@ -236,10 +235,11 @@ async function increment_post_score(post_id: number | string, setScore: React.Di
     if(res!.ok === false) {
         return console.log(res.status);
     }
+
+    setScore((score: number) => score + 1);
         
-    try {
-        setScore((score: number) => score + 1);
-    } catch(err) {
+    try {} catch(err) {
+        setScore((score: number) => score - 1);
         console.log(err);
     }
 
@@ -261,9 +261,10 @@ async function decrement_post_score(post_id: number | string, setScore: React.Di
         return console.log(res.status);
     }
         
-    try {
-        setScore((score: number) => score - 1);
-    } catch(err) {
+    setScore((score: number) => score - 1);
+        
+    try {} catch(err) {
+        setScore((score: number) => score + 1);
         console.log(err);
     }
 
