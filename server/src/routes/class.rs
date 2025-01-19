@@ -17,7 +17,7 @@ pub struct Post {
     score: i32,
     upload_type: u8,
     file_name: Option<String>,
-    #[serde(with = "chrono::serde::ts_seconds")]
+    #[serde(with = "chrono::serde::ts_milliseconds")]
     dt: DateTime<Utc>,
     text: Option<String>,
     professor_name: Option<String>,
