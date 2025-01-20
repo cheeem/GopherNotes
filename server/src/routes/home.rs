@@ -34,6 +34,8 @@ pub async fn get_classes_by_code(State(state): State<Arc<AppState>>, Query(Class
             LEFT JOIN posts on posts.class_id = classes.id 
             GROUP BY departments.id, classes.id 
             HAVING LOWER(CONCAT(departments.code, classes.code)) LIKE LOWER(?) 
+            ORDER BY 4 
+            LIMIT 18
         ",
         None => "
             SELECT 
@@ -45,6 +47,8 @@ pub async fn get_classes_by_code(State(state): State<Arc<AppState>>, Query(Class
             JOIN departments ON departments.id = classes.department_id 
             LEFT JOIN posts on posts.class_id = classes.id 
             GROUP BY departments.id, classes.id 
+            ORDER BY 4 
+            LIMIT 18 
         "
     };
 
@@ -79,6 +83,8 @@ pub async fn get_classes_by_professor(State(state): State<Arc<AppState>>, Query(
             LEFT JOIN posts on posts.class_id = classes.id 
             WHERE LOWER(professors.name) LIKE LOWER(?) 
             GROUP BY departments.id, classes.id 
+            ORDER BY 4 
+            LIMIT 18 
         ",
         None => "
             SELECT 
@@ -90,6 +96,8 @@ pub async fn get_classes_by_professor(State(state): State<Arc<AppState>>, Query(
             JOIN departments ON departments.id = classes.department_id 
             LEFT JOIN posts on posts.class_id = classes.id 
             GROUP BY departments.id, classes.id 
+            ORDER BY 4 
+            LIMIT 18 
         "
     };
 
