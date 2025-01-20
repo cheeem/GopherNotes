@@ -26,9 +26,13 @@
 
 #upload li {
     position: relative;
+
+    display: flex;
+    flex-direction: column;
 }
 
 #upload label {
+    z-index: 2;
     position: absolute;
     left: calc(var(--field-padding-x) - 0.7em);
     top: -1.2em;
@@ -55,6 +59,28 @@
     border: none;
     /* border-bottom: */
     border-radius: 1em;
+}
+
+#upload .error-message {
+    order: 2;
+
+    padding: var(--field-padding-y) var(--field-padding-x);
+
+    background-color: var(--invalid);
+
+    font-weight: 800;
+
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+}
+
+#upload .error-message ~ input, 
+#upload .error-message ~ .upload-input, 
+#upload .error-message ~ button {
+    order: 1;
+
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
 }
 
 #upload .upload-type {
@@ -87,24 +113,31 @@
     display: none;
 }
 
-#upload .upload-field > button {
-    height: 10em;
+#upload .upload-input {
     width: 40vw;
-
-    background-color: var(--light2);
 
     border-top-left-radius: 0;
 }
 
-#upload .upload-field > button p {
+#upload .file-upload {
+    height: 10em;
+
+    background-color: var(--light2);
+
+    border-radius: 1em;
+}
+
+#upload .file-upload {
     font-weight: 600;
 }
 
 #upload .upload-field textarea {
     height: 30em;
-    width: 40vw;
+}
 
-    border-top-left-radius: 0;
+#upload .form-footer {
+    display: flex;
+    flex-direction: column;
 }
 
 #upload .form-footer button {
@@ -115,13 +148,15 @@
     background-color: var(--light2);
 
     font-weight: 600;
-    color: var(--light1);
+    color: var(--dark1);
 
     border-radius: 1em;
 }
 
 #upload form:valid .form-footer button {
     background-color: var(--dark1);
+
+    color: var(--light1);
 }
 
 #upload form:valid .form-footer button:hover {
