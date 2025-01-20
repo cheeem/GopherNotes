@@ -8,7 +8,7 @@ type Post = {
     score: number,
     upload_type: number,
     file_name?: string,
-    dt: string, 
+    dt: number, 
     text?: string | null,
     professor_name: string,
     user_id: number,
@@ -104,7 +104,9 @@ function PostContent(props: { post: Post }) {
 }
 
 function PostImage(props: { post: Post }) {
+    console.log(`${uploads_path}/${props.post.file_name}`);
     return <div className="image">
+        {/* <iframe src={`${uploads_path}/${props.post.file_name}`}></iframe> */}
         <img src={`${uploads_path}/${props.post.file_name}`} alt="" />
     </div>
 }

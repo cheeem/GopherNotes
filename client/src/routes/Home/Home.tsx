@@ -54,16 +54,16 @@ const search_options: ReadonlyArray<SearchOption> = [
     { display: "Professor", query: "professor" },
 ] as const;
 
-const sort_options: ReadonlyArray<string> = [
-    "Recently Visited",
-    "Popular",
-] as const;
+// const sort_options: ReadonlyArray<string> = [
+//     "Recently Visited",
+//     "Popular",
+// ] as const;
 
 export default function Home(): JSX.Element {
 
     const [classes, setClasses] = useState<UMNClass[] | null>(null);
     const [search_option_active, setSearchOptionActive] = useState(0);
-    const [sort_option_active, setSortOptionActive] = useState(0);
+    // const [sort_option_active, setSortOptionActive] = useState(0);
 
     useEffect(() => {
         searchClasses(null, search_option_active, setClasses);
@@ -93,7 +93,7 @@ export default function Home(): JSX.Element {
                 </div>
             </section>
             <section className="courses">
-                <SortOptions active={sort_option_active} setActive={setSortOptionActive} />
+                {/* <SortOptions active={sort_option_active} setActive={setSortOptionActive} /> */}
                 <ClassList classes={classes} />
             </section>
         </article>
@@ -120,24 +120,24 @@ function SearchOptions(props: { active: number, setActive: React.Dispatch<React.
 
 }
 
-function SortOptions(props: { active: number, setActive: React.Dispatch<React.SetStateAction<number>> }): JSX.Element {
+// function SortOptions(props: { active: number, setActive: React.Dispatch<React.SetStateAction<number>> }): JSX.Element {
 
-    const options: JSX.Element[] = sort_options.map((display: string, index: number) => (
-        <button 
-            key={index}
-            className={optionActiveClass(props.active, index)} 
-            onClick={() => props.setActive(index)}
-        > {display}
-        </button>
-    ));
+//     const options: JSX.Element[] = sort_options.map((display: string, index: number) => (
+//         <button 
+//             key={index}
+//             className={optionActiveClass(props.active, index)} 
+//             onClick={() => props.setActive(index)}
+//         > {display}
+//         </button>
+//     ));
 
-    return (
-        <div className="sort-options">
-            {options}
-        </div>
-    )
+//     return (
+//         <div className="sort-options">
+//             {options}
+//         </div>
+//     )
 
-}
+// }
 
 function ClassList(props: { classes: UMNClass[] | null }): JSX.Element | null {
     

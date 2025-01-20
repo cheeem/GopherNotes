@@ -152,21 +152,29 @@ function PostContent(props: { post: Post }) {
 }
 
 function PostImage(props: { post: Post }) {
-    return <div className="image">
-        <img src={`${uploads_path}/${props.post.file_name}`} alt="" />
-    </div>
+    return (
+        <div className="image">
+            <img src={`${uploads_path}/${props.post.file_name}`} alt="" />
+        </div>
+    );
 }
 
 function PostPDF(props: { post: Post }) {
-    return <div className="pdf">
-        <iframe src={`${uploads_path}/${props.post.file_name}`}></iframe>
-    </div>;
+    return (
+        <div className="pdf">
+            <iframe src={`${uploads_path}/${props.post.file_name}`}></iframe>
+        </div>
+    );
 }
 
 function PostText(props: { post: Post }) {
-    return <div className="text">
-        <p>{props.post.text}</p>
-    </div>;
+
+    return (
+        <div className="text">
+            <p>{props.post.text}</p>
+        </div>
+    );
+
 }
 
 function optionActiveClass(active: number, search_option: number): string {
@@ -220,6 +228,7 @@ async function searchPosts(department_code: string | null, class_code: string | 
     }
 
 }
+
 async function increment_post_score(post_id: number | string, setScore: React.Dispatch<React.SetStateAction<number>>) {
 
     let url: string = `${base_api_url}/post/${post_id}/increment_post_score`;

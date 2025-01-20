@@ -262,6 +262,18 @@
     height: 100%;
 }
 
+#class .post .text {
+    overflow: hidden;
+
+    width: 100%;
+
+    text-overflow: ellipsis;
+
+    aspect-ratio: 1;
+
+    pointer-events: none;
+}
+
 #class .post-footer {
     display: flex;
     justify-content: space-between;
