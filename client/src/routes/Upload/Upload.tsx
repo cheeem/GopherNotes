@@ -73,23 +73,44 @@ function ErrorMessage(props: { error: UploadError }) {
 function FileUpload() {
 
     const [file_name, setFileName] = useState<null | string>(null);
+    const [file_size, setFileSize] = useState<null | number>(null);
     const file_input = useRef<HTMLInputElement>(null);
 
     return (
         <button type="button" className="upload-input file-upload" onClick={() => file_input.current!.click()}>
             <input ref={file_input} type="file" name="file" accept=".jpg,.jpeg,.png,.pdf" required 
-                onChange={() => setFileName(file_input.current?.files?.[0].name ?? null)} 
+                onChange={() => {
+
+                    if(file_input.current === null) {
+                        return;
+                    }
+
+                    if(file_input.current.files == null) {
+                        return;
+                    }
+
+                    const file = file_input.current.files[0];
+
+                    setFileName(file.name);
+                    setFileSize(file.size);
+
+                }} 
             />
-            {file_name ? 
-                <p>{file_name}</p> : 
+            {file_name && file_size ? 
+                <p>{file_name} <span>{formatFileSize(file_size)}MB</span></p> : 
                 <>
                     <img src={svg_upload} alt="" />
                     <p>Upload File</p>
+                    <p><span>16MB Maximum</span></p>
                 </>
             }
         </button>
     )
 
+}
+
+function formatFileSize(size: number): number {
+    return Math.round(size / 1024 / 1024 * 100) / 100;
 }
 
 function upload(e: FormEvent<HTMLFormElement>, navigate: NavigateFunction, setError: React.Dispatch<React.SetStateAction<UploadError | null>>) {
@@ -112,12 +133,35 @@ function upload(e: FormEvent<HTMLFormElement>, navigate: NavigateFunction, setEr
             navigate("/");
             return;
         }
-            
-        res.json().then((error: any) => {
-            // console.log(error);
-            setError(error);
-        });
-        
-    });
 
+        if(res.status === 413) {
+            setError({
+                status: 413,
+                field: "file",
+                msg: "File Too Large, Uploaded Files Cannot Exceed 16MB"
+            })
+            return;
+        }
+            
+        res.json()
+            .then((error: UploadError) => {
+                // console.log(error);
+                setError(error);
+            })
+            .catch(() => {
+                setError(defaultUploadError(res.status));
+            })
+        
+    })
+    .catch(() => {
+        setError(defaultUploadError(NaN));
+    })
+
+}
+
+function defaultUploadError(status: number): UploadError {
+    return {
+        status, 
+        msg: "An Unexpected Error Occured, Please Try Again Later"
+    }
 }

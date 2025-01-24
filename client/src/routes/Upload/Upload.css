@@ -135,6 +135,10 @@
     height: 30em;
 }
 
+#upload .upload-field p span {
+    font-weight: 400;
+}
+
 #upload .form-footer {
     display: flex;
     flex-direction: column;
@@ -151,12 +155,16 @@
     color: var(--dark1);
 
     border-radius: 1em;
+
+    cursor: not-allowed;
 }
 
 #upload form:valid .form-footer button {
     background-color: var(--dark1);
 
     color: var(--light1);
+
+    cursor: pointer;
 }
 
 #upload form:valid .form-footer button:hover {
