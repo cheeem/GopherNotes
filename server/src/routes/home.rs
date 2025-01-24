@@ -18,9 +18,14 @@ pub struct Class {
 #[derive(Deserialize)]
 pub struct ClassSearch {
     input: Option<String>,
+    page: Option<u32>,
 }
 
-pub async fn get_classes_by_code(State(state): State<Arc<AppState>>, Query(ClassSearch { input }): Query<ClassSearch>) -> Result<response::Json<Vec<Class>>, StatusCode> {
+const CLASS_PAGE_SIZE: u32 = 30;
+
+pub async fn get_classes_by_code(State(state): State<Arc<AppState>>, Query(ClassSearch { input, page }): Query<ClassSearch>) -> Result<response::Json<Vec<Class>>, StatusCode> {
+
+    let page: u32 = page.unwrap_or(0);
 
     let sql: &str = match input {
         Some(_) => "
@@ -34,8 +39,8 @@ pub async fn get_classes_by_code(State(state): State<Arc<AppState>>, Query(Class
             LEFT JOIN posts on posts.class_id = classes.id 
             GROUP BY departments.id, classes.id 
             HAVING LOWER(CONCAT(departments.code, classes.code)) LIKE LOWER(?) 
-            ORDER BY 4 
-            LIMIT 18
+            ORDER BY 4 DESC, 1, 2 
+            LIMIT ? OFFSET ? 
         ",
         None => "
             SELECT 
@@ -47,8 +52,8 @@ pub async fn get_classes_by_code(State(state): State<Arc<AppState>>, Query(Class
             JOIN departments ON departments.id = classes.department_id 
             LEFT JOIN posts on posts.class_id = classes.id 
             GROUP BY departments.id, classes.id 
-            ORDER BY 4 
-            LIMIT 18 
+            ORDER BY 4 DESC, 1, 2 
+            LIMIT ? OFFSET ? 
         "
     };
 
@@ -57,6 +62,10 @@ pub async fn get_classes_by_code(State(state): State<Arc<AppState>>, Query(Class
     if let Some(input) = input.map(|str| str.replace(' ', "")) {
         query = query.bind(format!("%{input}%"));
     }
+
+    query = query
+        .bind(CLASS_PAGE_SIZE)
+        .bind(page * CLASS_PAGE_SIZE);
     
     let classes: Vec<Class> = query
         .fetch_all(&state.db)
@@ -67,8 +76,10 @@ pub async fn get_classes_by_code(State(state): State<Arc<AppState>>, Query(Class
 
 }
 
-pub async fn get_classes_by_professor(State(state): State<Arc<AppState>>, Query(ClassSearch { input }): Query<ClassSearch>) -> Result<response::Json<Vec<Class>>, StatusCode> {
+pub async fn get_classes_by_professor(State(state): State<Arc<AppState>>, Query(ClassSearch { input, page }): Query<ClassSearch>) -> Result<response::Json<Vec<Class>>, StatusCode> {
     
+    let page: u32 = page.unwrap_or(0);
+
     let sql: &str = match input {
         Some(_) => "
             SELECT 
@@ -83,8 +94,8 @@ pub async fn get_classes_by_professor(State(state): State<Arc<AppState>>, Query(
             LEFT JOIN posts on posts.class_id = classes.id 
             WHERE LOWER(professors.name) LIKE LOWER(?) 
             GROUP BY departments.id, classes.id 
-            ORDER BY 4 
-            LIMIT 18 
+            ORDER BY 4 DESC, 1, 2 
+            LIMIT ? OFFSET ? 
         ",
         None => "
             SELECT 
@@ -96,8 +107,8 @@ pub async fn get_classes_by_professor(State(state): State<Arc<AppState>>, Query(
             JOIN departments ON departments.id = classes.department_id 
             LEFT JOIN posts on posts.class_id = classes.id 
             GROUP BY departments.id, classes.id 
-            ORDER BY 4 
-            LIMIT 18 
+            ORDER BY 4 DESC, 1, 2 
+            LIMIT ? OFFSET ? 
         "
     };
 
@@ -106,6 +117,10 @@ pub async fn get_classes_by_professor(State(state): State<Arc<AppState>>, Query(
     if let Some(input) = input {
         query = query.bind(format!("%{input}%"));
     }
+
+    query = query
+        .bind(CLASS_PAGE_SIZE)
+        .bind(page * CLASS_PAGE_SIZE);
     
     let classes: Vec<Class> = query
         .fetch_all(&state.db)
