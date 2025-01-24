@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { Link } from "react-router-dom";
 import { base_api_url } from "../../constants";
 import "./Home.css";
@@ -16,57 +16,43 @@ type SearchOption = {
     query: string,
 }
 
-// const classes: ReadonlyArray<UMNClass> = [
-//     {
-//         code: "CSCI 1103",
-//         name: "Introduction to Computer Programming in Java",
-//         post_count: 50,
-//     },
-//     {
-//         code: "CSCI 2081",
-//         name: "Introduction to Software Development",
-//         post_count: 123,
-//     },
-//     {
-//         code: "CSCI 3041",
-//         name: "Introduction to Discrete Structures and Algorithms",
-//         post_count: 123,
-//     },
-//     {
-//         code: "CSCI 2081",
-//         name: "Introduction to Software Development",
-//         post_count: 87,
-//     },
-//     {
-//         code: "CSCI 3041",
-//         name: "Introduction to Discrete Structures and Algorithms",
-//         post_count: 87,
-//     },
-//     {
-//         code: "CSCI 1103",
-//         name: "Introduction to Computer Programming in Java",
-//         post_count: 50,
-//     },
-// ] as const;
-
 const search_options: ReadonlyArray<SearchOption> = [
     { display: "Class Code", query: "code" },
     { display: "Professor", query: "professor" },
 ] as const;
 
-// const sort_options: ReadonlyArray<string> = [
-//     "Recently Visited",
-//     "Popular",
-// ] as const;
-
 export default function Home(): JSX.Element {
 
+    const page = useRef<number>(0);
     const [classes, setClasses] = useState<UMNClass[] | null>(null);
     const [search_option_active, setSearchOptionActive] = useState(0);
     // const [sort_option_active, setSortOptionActive] = useState(0);
 
+    const inputRef = useRef<HTMLInputElement>(null);
+    const observer = useRef<IntersectionObserver>();
+
     useEffect(() => {
-        searchClasses(null, search_option_active, setClasses);
+
+        observer.current = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    searchClasses(inputRef.current!.value || null, search_option_active, page.current + 1).then(c => {
+                        if(c) {
+                            page.current++;
+                            setClasses((classes) => classes!.concat(c));
+                        }
+                    });
+                }
+            });
+        });
+
+    }, []);
+
+    useEffect(() => {
+        searchClasses(inputRef.current!.value || null, search_option_active, 0).then(c => {
+            page.current = 0;
+            setClasses(c);
+        });
     }, [search_option_active]);
     
     return (
@@ -81,7 +67,11 @@ export default function Home(): JSX.Element {
                         <SearchOptions active={search_option_active} setActive={setSearchOptionActive} />
                         <div className="search-input">
                             <img src={svg_search} alt="" />
-                            <input type="text" name="input" onChange={(e: ChangeEvent<HTMLInputElement>) => searchClasses(e.target.value || null, search_option_active, setClasses)} />
+                            <input ref={inputRef} type="text" name="input" onChange={(e: ChangeEvent<HTMLInputElement>) => 
+                                searchClasses(e.target.value || null, search_option_active, 0).then(c => {
+                                    page.current = 0;
+                                    setClasses(c);
+                                })} />
                         </div>
                     </div>
                     <div className="or">
@@ -94,7 +84,7 @@ export default function Home(): JSX.Element {
             </section>
             <section className="courses">
                 {/* <SortOptions active={sort_option_active} setActive={setSortOptionActive} /> */}
-                <ClassList classes={classes} />
+                <ClassList classes={classes} observer={observer} />
             </section>
         </article>
     )
@@ -139,13 +129,26 @@ function SearchOptions(props: { active: number, setActive: React.Dispatch<React.
 
 // }
 
-function ClassList(props: { classes: UMNClass[] | null }): JSX.Element | null {
+function ClassList(props: { classes: UMNClass[] | null, observer: React.MutableRefObject<IntersectionObserver | undefined> }): JSX.Element | null {
+
+    const nextRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if(props.observer.current && nextRef.current) {
+            props.observer.current!.observe(nextRef.current!);
+        }
+    }, [props.observer.current, nextRef.current]);
     
     if(props.classes === null) {
         return null; // loading state
     }
     
-    return <ul>{props.classes.map(Class)}</ul>;
+    return (
+        <div>
+            <ul>{props.classes.map(Class)}</ul>
+            <div className="next" ref={nextRef}></div>
+        </div>    
+    );
 
 }
 
@@ -177,14 +180,14 @@ function optionActiveClass(active: number, search_option: number): string {
 
 }
 
-async function searchClasses(input: string | null, search_option_active: number, setClasses: React.Dispatch<React.SetStateAction<UMNClass[] | null>>) {
+async function searchClasses(input: string | null, search_option_active: number, page: number): Promise<UMNClass[] | null> {
 
     const search_by: string = search_options[search_option_active].query;
 
-    let url: string = `${base_api_url}/home/get_classes_by_${search_by}`;
+    let url: string = `${base_api_url}/home/get_classes_by_${search_by}?page=${page}`;
     
     if(input) {
-        url += `?input=${input}`;
+        url += `&input=${input}`;
     }
 
     let res: Response;
@@ -192,17 +195,20 @@ async function searchClasses(input: string | null, search_option_active: number,
     try {   
         res = await fetch(url);
     } catch(err) {
-        return console.log(err);
+        console.log(err);
+        return null;
     }
         
     if(res!.ok === false) {
-        return console.log(res.status);
+        console.log(res.status);
+        return null;
     }
         
     try {
-        setClasses(await res!.json());
+        return await res!.json();
     } catch(err) {
         console.log(err);
+        return null;
     }
 
 }
